@@ -12,7 +12,7 @@ import java.util.HashMap;
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
  * indirect objects is not known.<br> - The game handles the validity of these
  * words, not the parser.<br> 2. The first words of the input is always a
- * verb.<br> - Player stringCommands are 2nd person imperative statements.<br>
+ * verb.<br> - Player {@link Command} are 2nd person imperative statements.<br>
  * 3. Indirect object phrases are always preceded by a preposition.<br> 4.
  * Direct object phrases are always positioned before indirect object
  * phrases.<br> 5. The dictionary of all possible prepositions is known.<br> 6.
@@ -96,7 +96,7 @@ public class VerbGnosticParser extends Parser {
         }
         // If any input remains, they are adjectives which modify the
         // object.
-        // TODO: This WILL need to change once multiple stringCommands separated
+        // TODO: This WILL need to change once multiple {@link Command} separated
         // by commas with a single verb is implemented. Either here, or in
         // syntactical analysis.
         ArrayList<String> adjectives = new ArrayList<>();
@@ -133,10 +133,10 @@ public class VerbGnosticParser extends Parser {
     }
 
     /**
-     * For multi-playerAction stringCommands, playerAction separators define the
+     * For multi-{@link Action} {@link Command}, {@link Action} separators define the
      * number of playerActions that are present in a command. Single
      * syntacticalAnalysis() assumes an ArrayList of tokens is a single
-     * playerAction, we need to make an ArrayList of ArrayLists (playerActions).
+     * {@link Action}, we need to make an ArrayList of ArrayLists (playerActions).
      * Separators are not included in any token array.
      * <p>
      * TODO: Optimization: redo this so it doesn't need to traverse the tokens
@@ -148,7 +148,7 @@ public class VerbGnosticParser extends Parser {
     public ArrayList<ArrayList<String>> splitTokensByActions(
             ArrayList<String> tokens) {
         // Each ArrayList sublist separated by separators counts as its own
-        // playerAction
+        // {@link Action}
         // Find the number of playerActions and track what index the
         // playerActions are separated by.
         ArrayList<Integer> separatorIndices = new ArrayList<>();
@@ -158,7 +158,7 @@ public class VerbGnosticParser extends Parser {
                 separatorIndices.add(i);
             }
         }
-        // Separate each playerAction, defined by separatorIndices, into its
+        // Separate each {@link Action}, defined by separatorIndices, into its
         // own ArrayList of tokens. Action separators are not included
         // in the arrays.
         int startIndex = 0;
@@ -206,7 +206,7 @@ public class VerbGnosticParser extends Parser {
             return;
         }
 
-        // TODO when multi-action stringCommands are implemented, make
+        // TODO when multi-action {@link Command} are implemented, make
         // this part a loop for every separator section.
 
         Action action = new Action();
@@ -600,7 +600,7 @@ public class VerbGnosticParser extends Parser {
     // * <p>
     // * TODO Creates a player command from a list of words. Depending on the
     // relation
-    // * between words, the playerAction {@link Verb} and object {@link Noun} are
+    // * between words, the {@link Action} {@link Verb} and object {@link Noun} are
     // * determined.
     // *
     // * @param input
@@ -613,9 +613,9 @@ public class VerbGnosticParser extends Parser {
     // int actionIndex = 0;
     // int objectIndex = 0;
     // // 1. The first words of the command should either be a verb, or a shortcut
-    // // represents some playerAction
+    // // represents some {@link Action}
     //
-    // // return new Command(command, playerAction, object);
+    // // return new Command(command, {@link Action}, object);
     // return null;
     // }
 }

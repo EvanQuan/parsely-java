@@ -2,6 +2,8 @@ package test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import test.com.github.evanquan.parsely.util.CollectionUtilsTest;
+import test.com.github.evanquan.parsely.util.FuncUtilsTest;
 import test.com.github.evanquan.parsely.words.ActionTest;
 import test.com.github.evanquan.parsely.words.ObjectPhraseTest;
 import test.com.github.evanquan.parsely.words.WordTest;
@@ -13,8 +15,8 @@ import test.com.github.evanquan.parsely.words.WordTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-//        CollectionUtilsTest.class,
-//        FuncUtilsTest.class,
+        CollectionUtilsTest.class,
+        FuncUtilsTest.class,
 //        LocationTest.class,
 //        TestTest.class,
         ActionTest.class,
@@ -28,7 +30,6 @@ import test.com.github.evanquan.parsely.words.WordTest;
 //        VerbAgnosticPlayerInputParser_getObjectPhrase_Test.class,
 //        VerbAgnosticPlayerInputParser_parse_Test.class,
         ObjectPhraseTest.class,
-//        MultisetTest.class,
 //        TextUtilsTest.class,
         WordTest.class,
 //        ExitTest.class
