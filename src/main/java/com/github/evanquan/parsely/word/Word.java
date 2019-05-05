@@ -81,7 +81,7 @@ public class Word {
             Set.of("my")
     );
     /**
-     * For creating {@link PlayerCommand}s, all articles are treated the same.
+     * For creating {@link Command}s, all articles are treated the same.
      */
     private static final HashSet<String> ARTICLES
             = CollectionUtils.mergeHashSets(
@@ -101,7 +101,7 @@ public class Word {
     );
     /**
      * While the {@link Parser} will treat any word that ends with "ly" as an
-     * adverb for parsing strings into {@link PlayerCommand}s, the game will
+     * adverb for parsing strings into {@link Command}s, the game will
      * reject all adverbs it doesn't recognize.
      */
     private static final HashSet<String> ADVERBS
@@ -109,17 +109,20 @@ public class Word {
             Set.of("quickly", "slowly", "sneakily", "loudly", "quietly")
     );
     /**
-     * Action verbs that have a direct object phrase attached directly to them,
-     * but never an indirect object phrase. Examples: eat cake, take gold
+     * Verbs that must have a direct object phrase attached directly to
+     * them, but never an indirect object phrase.
+     * <br>
+     * Examples: eat (cake), take (gold)
      */
     private static final HashSet<String> NON_INDIRECT_TRANSITIVE_VERBS
             = new HashSet<>(
             Set.of("eat", "take", "get", "drop", "remove", "hit", "examine")
     );
     /**
-     * Action verbs that have a direct object phrase attached directly to them,
-     * and sometimes optionally an indirect object phrase. Examples: go (to)
-     * west, use key (on door)
+     * Verbs that must have a direct object phrase attached directly to
+     * them and optionally an indirect object phrase.
+     * <br>
+     * Examples: go (west), use (key on door), use (key)
      */
     private static final HashSet<String> OPTIONALLY_INDIRECT_TRANSITIVE_VERBS
             = new HashSet<>(
@@ -129,8 +132,9 @@ public class Word {
     /**
      * Transitive verbs that REQUIRE an indirect object phrase for the command
      * to fully to make sense, although without an indirect object phrase, it
-     * will still parse correctly. Examples: give gold to guard (give gold ->
-     * give gold to who?)
+     * will still parse correctly.
+     * <br>
+     * Examples: give (gold to guard) [give gold -> give gold to who?]
      */
     private static final HashSet<String> MANDATORY_INDIRECT_TRANSITIVE_VERBS
             = new HashSet<>(
@@ -185,7 +189,7 @@ public class Word {
             }
     );
     /**
-     * PlayerAction separators separates {@link PlayerCommand} playerActions.
+     * Action separators separates {@link Command} actions.
      * These are used for receiveInput multi-playerAction stringCommands.
      */
     private static final HashSet<String> ACTION_SEPARATORS
@@ -201,7 +205,7 @@ public class Word {
 
     /**
      * Action separators are words (or characters) that split a input string
-     * from a {@link PlayerCommand} into multiple {@link PlayerAction}s.
+     * from a {@link Command} into multiple {@link Action}s.
      *
      * @param word to check
      * @return true if the specified word is recognized as a valid action

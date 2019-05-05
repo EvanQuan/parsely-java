@@ -7,17 +7,17 @@ import java.util.ArrayList;
 /**
  * Represents a command that the player has issued to the game in a form of a
  * {@link String}. A player command is composed of an {@link ArrayList} of
- * {@link PlayerAction}s that are sequentially ordered from how they are ordered
+ * {@link Action}s that are sequentially ordered from how they are ordered
  * in the input string.
  *
  * @author Evan Quan
  */
-public class PlayerCommand {
+public class Command {
 
     /**
-     * Series of playerActions in the order they were issued.
+     * Series of actions in the order they were issued.
      */
-    ArrayList<PlayerAction> playerActions;
+    ArrayList<Action> actions;
     /**
      * Represents the player command directly as a string, unaltered.
      */
@@ -25,43 +25,43 @@ public class PlayerCommand {
 
     /**
      * Default constructor. Does not initially contain any {@link
-     * PlayerAction}s.
+     * Action}s.
      *
      * @param string input string representation of the command.
      */
-    public PlayerCommand(String string) {
+    public Command(String string) {
         this.string = string;
-        playerActions = new ArrayList<>();
+        actions = new ArrayList<>();
     }
 
     /**
-     * Add a single playerAction to this command's list of playerActions.
+     * Add a single action to this command's list of actions.
      *
-     * @param playerAction
+     * @param action
      */
-    public void addAction(PlayerAction playerAction) {
-        this.playerActions.add(playerAction);
+    public void addAction(Action action) {
+        this.actions.add(action);
     }
 
     /**
-     * @param playerAction to check
-     * @return true if this command's {@link ArrayList} of {@link PlayerAction}s
-     * contains the specified playerAction.
+     * @param action to check
+     * @return true if this command's {@link ArrayList} of {@link Action}s
+     * contains the specified action.
      */
-    public boolean contains(PlayerAction playerAction) {
-        return this.playerActions.contains(playerAction);
+    public boolean contains(Action action) {
+        return this.actions.contains(action);
     }
 
     /**
      * @param other object to compare
-     * @return true if the other object is a PlayerCommand that has the same
-     * input string representation and same {@link PlayerAction}s.
+     * @return true if the other object is a Command that has the same
+     * input string representation and same {@link Action}s.
      */
     @Override
     public boolean equals(Object other) {
-        if (other instanceof PlayerCommand) {
-            return hasSameString((PlayerCommand) other)
-                    && hasSameActions((PlayerCommand) other);
+        if (other instanceof Command) {
+            return hasSameString((Command) other)
+                    && hasSameActions((Command) other);
         }
         return false;
     }
@@ -76,12 +76,12 @@ public class PlayerCommand {
     /**
      * @return all the actions that this command represents.
      */
-    public ArrayList<PlayerAction> getPlayerActions() {
-        return this.playerActions;
+    public ArrayList<Action> getActions() {
+        return this.actions;
     }
 
-    public void setPlayerActions(ArrayList<PlayerAction> playerActions) {
-        this.playerActions = playerActions;
+    public void setActions(ArrayList<Action> actions) {
+        this.actions = actions;
     }
 
     /**
@@ -96,21 +96,21 @@ public class PlayerCommand {
     }
 
     /**
-     * Check if this command's {@link ArrayList} of {@link PlayerAction}s is not
+     * Check if this command's {@link ArrayList} of {@link Action}s is not
      * empty.
      *
      * @return true if this command contains at least one action.
      */
     public boolean hasActions() {
-        return !this.playerActions.isEmpty();
+        return !this.actions.isEmpty();
     }
 
     /**
      * @param other to compare
      * @return true if the other command has the same actions as this command.
      */
-    public boolean hasSameActions(PlayerCommand other) {
-        return FuncUtils.nullablesEqual(this.playerActions, other.getPlayerActions());
+    public boolean hasSameActions(Command other) {
+        return FuncUtils.nullablesEqual(this.actions, other.getActions());
     }
 
     /**
@@ -118,7 +118,7 @@ public class PlayerCommand {
      * @return true if the other command has the same input string as this
      * command.
      */
-    public boolean hasSameString(PlayerCommand other) {
+    public boolean hasSameString(Command other) {
         return FuncUtils.nullablesEqual(this.string, other.getString());
     }
 
@@ -130,12 +130,12 @@ public class PlayerCommand {
     public String toString() {
         StringBuilder actions = new StringBuilder();
         if (hasActions()) {
-            for (PlayerAction playerAction : this.playerActions) {
-                actions.append("\t\t" + playerAction + System.lineSeparator());
+            for (Action action : this.actions) {
+                actions.append("\t\t" + action + System.lineSeparator());
             }
         }
         return "[string: " + string + System.lineSeparator() +
-                "\tplayerActions[" + playerActions.size() + "]" + System.lineSeparator()
+                "\tactions[" + this.actions.size() + "]" + System.lineSeparator()
                 + actions + "]";
     }
 }

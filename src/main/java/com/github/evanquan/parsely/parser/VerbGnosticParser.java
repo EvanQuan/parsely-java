@@ -1,13 +1,12 @@
 package com.github.evanquan.parsely.parser;
 
-import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.word.*;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashMap;
 
 /**
- * Parses an input string into a {@link PlayerCommand}. The parser abides by the
+ * Parses an input string into a {@link Command}. The parser abides by the
  * following grammar rules:
  * <p>
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
@@ -29,62 +28,15 @@ import java.util.Scanner;
  *
  * @author Evan Quan
  */
-public class VerbGnosticParser implements Parser {
+public class VerbGnosticParser extends Parser {
 
-    // NOTE: For now, only "," as end punctuation will count, as quotes are
-    // causing problems with syntactical analysis
-    /**
-     * Defines the type of punctuation that can exist at the start of a word
-     * that will split and count as its own token.
-     */
-    // public static final char[] START_PUNCTUATION = { '\'', '"' };
-    public static final char[] START_PUNCTUATION = {};
-    /**
-     * Defines the type of punctuation that can exist at the end of a word that
-     * will split and count as its own token.
-     */
-    // public static final char[] END_PUNCTUATION = { '\'', '"', ',' };
-    public static final char[] END_PUNCTUATION = {',', '.'};
-
-    public static final String[] VALID_PREPOSITIONS = {};
+    private HashMap<String, String> actionTypes;
 
     /**
-     * Cannot instantiate.
+     * Can only be instantiated by ParserFactory
      */
-    private VerbGnosticParser() {
-    }
-
-    /**
-     * Splits token by punctuation and adds punctuation components to
-     * tokens.<br> - Double and single quotes at the start or end of words<br> -
-     * Commas after a word<br> - Other punctuation and symbols are stripped and
-     * ignored.
-     *
-     * @param tokens
-     * @param token
-     */
-    public static void addToken(ArrayList<String> tokens, String token) {
-
-        char firstChar = token.charAt(0);
-        if (CollectionUtils.contains(START_PUNCTUATION, firstChar)) {
-            tokens.add(Character.toString(firstChar));
-            token = token.substring(1);
-        }
-
-        boolean changedLastChar = false;
-        String endQuote = "";
-        char lastChar = token.charAt(token.length() - 1);
-        if (CollectionUtils.contains(END_PUNCTUATION, lastChar)) {
-            endQuote = Character.toString(lastChar);
-            token = token.substring(0, token.length() - 1);
-            changedLastChar = true;
-        }
-
-        tokens.add(token);
-        // End quote is added after word to preserve token order
-        if (changedLastChar) {
-            tokens.add(endQuote);
-        }
+    VerbGnosticParser(HashMap<String, String> actions) {
+        actionTypes = actions;
     }
 
     /**
@@ -156,57 +108,27 @@ public class VerbGnosticParser implements Parser {
     }
 
     /**
-     * <b>Step 1: Lexical Analysis</b>
-     * <p>
-     * Splits the input string into tokens, each representing a word of the
-     * command. The tokens are in the same order as they appear in the input
-     * string. Each character of punctuation counts as its own token only if it
-     * is a single or double quote around a word, or a comma after a word.
-     *
-     * @param input - input String
-     * @return list of all tokens.
-     */
-    public static ArrayList<String> lexicalAnalysis(String input) {
-        // NOTE: There's probably a better way to do this that doesn't use Scanner.
-        // aka. Split by spaces, then map reduce.
-        Scanner in = new Scanner(input);
-        ArrayList<String> tokens = new ArrayList<String>();
-
-        // Add all tokens
-        while (in.hasNext()) {
-            String token = in.next();
-            addToken(tokens, token);
-        }
-        in.close();
-        return tokens;
-        // Right, now just using basic split by spaces. May need to change this when
-        // things get
-        // more complicated
-        // return new ArrayList<>(Arrays.asList(input.split(" ")));
-    }
-
-    /**
      * Parse input text into words and apply their appropriate meanings and
      * relationships. Accepts only imperative statements.
      *
      * @param input - String to parse into words
-     * @return command that represents the player {@link PlayerCommand}
+     * @return command that represents the player {@link Command}
      */
-    public static PlayerCommand parse(String input) {
-        // Add unaltered input to PlayerCommand
-        PlayerCommand playerCommand = new PlayerCommand(input);
+    public static Command parse(String input) {
+        // Add unaltered input to Command
+        Command command = new Command(input);
         // https://groups.google.com/forum/#!topic/rec.arts.int-fiction/VpsWZdWRnlA
         ArrayList<String> tokens = lexicalAnalysis(input);
         ArrayList<ArrayList<String>> actionTokens =
                 splitTokensByActions(tokens);
 
         for (ArrayList<String> action : actionTokens) {
-            syntacticalAnalysis(playerCommand, action);
+            syntacticalAnalysis(command, action);
         }
 
-        syntacticalCleanup(playerCommand);
+        syntacticalCleanup(command);
 
-        return playerCommand;
+        return command;
     }
 
     /**
@@ -236,7 +158,7 @@ public class VerbGnosticParser implements Parser {
             }
         }
         // Separate each playerAction, defined by separatorIndices, into its
-        // own ArrayList of tokens. PlayerAction separators are not included
+        // own ArrayList of tokens. Action separators are not included
         // in the arrays.
         int startIndex = 0;
         int endIndex;
@@ -271,11 +193,11 @@ public class VerbGnosticParser implements Parser {
      * phrases.<br> 4. The dictionary of all possible Prepositions is known.<br>
      * 5. The dictionary of all possible determiners is known.<br>
      *
-     * @param playerCommand
+     * @param command
      * @param tokens
      * @return
      */
-    public static void syntacticalAnalysis(PlayerCommand playerCommand,
+    public static void syntacticalAnalysis(Command command,
                                            ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             // This happens when the player input string an empty string
@@ -283,10 +205,10 @@ public class VerbGnosticParser implements Parser {
             return;
         }
 
-        // TODO when multi-playerAction stringCommands are implemented, make
+        // TODO when multi-action stringCommands are implemented, make
         // this part a loop for every separator section.
 
-        PlayerAction playerAction = new PlayerAction();
+        Action action = new Action();
 
         // Get adverbs
         VerbPhrase verbPhrase = new VerbPhrase();
@@ -298,8 +220,8 @@ public class VerbGnosticParser implements Parser {
         verbPhrase.setAdverbs(adverbs);
         if (tokens.isEmpty()) {
             // If the action is only adverbs, then return early
-            playerAction.setVerbPhrase(verbPhrase);
-            playerCommand.addAction(playerAction);
+            action.setVerbPhrase(verbPhrase);
+            command.addAction(action);
             return;
         }
         if (Word.isVerb(tokens.get(0))) {
@@ -311,11 +233,11 @@ public class VerbGnosticParser implements Parser {
             verbPhrase.setVerb(tokens.get(0));
             tokens.remove(0);
         }
-        playerAction.setVerbPhrase(verbPhrase);
+        action.setVerbPhrase(verbPhrase);
         // 1. Scan for a preposition. If one is found, remove it.
         // Parse the input preceding the preposition as a direct object
         // phrase. Parse the input following the preposition as an
-        // indirect object phrase. For the sake of how the PlayerCommand will
+        // indirect object phrase. For the sake of how the Command will
         // be parsed in the game, the preposition is added to the indirect
         // object phrase.
 
@@ -326,7 +248,7 @@ public class VerbGnosticParser implements Parser {
         for (i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
             if (Word.isObjectPhraseSeparatingPreposition(token)) {
-                playerAction.setPreposition(token);
+                action.setPreposition(token);
                 break;
             } else {
                 directTokens.add(token);
@@ -339,26 +261,26 @@ public class VerbGnosticParser implements Parser {
         }
 
         // Create the object phrases from the token lists
-        playerAction.setDirectObjectPhrase(getObjectPhrase(directTokens));
-        playerAction.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
+        action.setDirectObjectPhrase(getObjectPhrase(directTokens));
+        action.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
 
-        // Add complete playerAction to player command
-        playerCommand.addAction(playerAction);
+        // Add complete action to player command
+        command.addAction(action);
     }
 
     /**
-     * Modify all actions in a {@link PlayerCommand} so that inferred components
+     * Modify all actions in a {@link Command} so that inferred components
      * can be added to each of them. In more detail, this ensures that all valid
      * multi-actions work by ensuring each one has the verb phrases,
      * prepositions, direct and indirect object phrases necessary.
      *
-     * @param playerCommand
+     * @param command
      */
-    public static void syntacticalCleanup(PlayerCommand playerCommand) {
-        if (playerCommand.isEmpty()) {
+    public static void syntacticalCleanup(Command command) {
+        if (command.isEmpty()) {
             return;
         }
-        ArrayList<PlayerAction> actions = playerCommand.getPlayerActions();
+        ArrayList<Action> actions = command.getActions();
 
         // Backwards fix must be applied after forward fix because forward
         // fix fixes some direct object phrases to indirect object
@@ -382,11 +304,11 @@ public class VerbGnosticParser implements Parser {
      *
      * @param actions
      */
-    public static void fixSyntaxForward(ArrayList<PlayerAction> actions) {
+    public static void fixSyntaxForward(ArrayList<Action> actions) {
         VerbPhrase verbPhraseToCopy = null;
         ObjectPhrase directObjectToCopy = null;
         String prepositionToCopy = null;
-        for (PlayerAction action : actions) {
+        for (Action action : actions) {
             verbPhraseToCopy = getForwardVerbPhraseToCopy(action, verbPhraseToCopy);
             directObjectToCopy = getForwardDirectObjectToCopy(action,
                     verbPhraseToCopy,
@@ -401,7 +323,7 @@ public class VerbGnosticParser implements Parser {
         }
     }
 
-    private static VerbPhrase getForwardVerbPhraseToCopy(PlayerAction action,
+    private static VerbPhrase getForwardVerbPhraseToCopy(Action action,
                                                          VerbPhrase previousVerbPhraseToCopy) {
         if (action.hasVerbPhrase()
                 && (action.hasDirectObjectPhrase() || action.hasIndirectObjectPhrase())) {
@@ -438,7 +360,7 @@ public class VerbGnosticParser implements Parser {
      * @param previousDirectObjectToCopy
      * @return
      */
-    private static ObjectPhrase getForwardDirectObjectToCopy(PlayerAction action,
+    private static ObjectPhrase getForwardDirectObjectToCopy(Action action,
                                                              VerbPhrase verbPhraseToCopy,
                                                              ObjectPhrase previousDirectObjectToCopy) {
         if (verbPhraseToCopy != null) {
@@ -465,7 +387,7 @@ public class VerbGnosticParser implements Parser {
      * @param previousPrepositionToCopy
      * @return
      */
-    private static String getForwardPrepositionToCopy(PlayerAction action,
+    private static String getForwardPrepositionToCopy(Action action,
                                                       VerbPhrase verbPhraseToCopy,
                                                       String previousPrepositionToCopy) {
         if (verbPhraseToCopy != null) {
@@ -494,7 +416,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param verbPhraseToCopy
      */
-    private static void setForwardVerbPhraseToCopy(PlayerAction action,
+    private static void setForwardVerbPhraseToCopy(Action action,
                                                    VerbPhrase verbPhraseToCopy) {
         if (verbPhraseToCopy != null) {
             action.setVerbPhrase(verbPhraseToCopy);
@@ -507,7 +429,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param prepositionToCopy
      */
-    private static void setForwardPrepositionToCopy(PlayerAction action,
+    private static void setForwardPrepositionToCopy(Action action,
                                                     String prepositionToCopy) {
 
         if (prepositionToCopy != null) {
@@ -521,7 +443,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param directObjectToCopy
      */
-    private static void setForwardDirectObjectToCopy(PlayerAction action,
+    private static void setForwardDirectObjectToCopy(Action action,
                                                      ObjectPhrase directObjectToCopy) {
         if (directObjectToCopy != null) {
             action.setDirectObjectPhrase(directObjectToCopy);
@@ -536,7 +458,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param prepositionToCopy
      */
-    private static void moveForwardDirectToIndirect(PlayerAction action,
+    private static void moveForwardDirectToIndirect(Action action,
                                                     String prepositionToCopy) {
         if (prepositionToCopy != null) {
             ObjectPhrase directToCopy = action.getDirectObjectPhrase();
@@ -554,12 +476,12 @@ public class VerbGnosticParser implements Parser {
      *
      * @param actions
      */
-    public static void fixSyntaxBackwards(ArrayList<PlayerAction> actions) {
+    public static void fixSyntaxBackwards(ArrayList<Action> actions) {
         VerbPhrase lastVerbPhrase = actions.get(0).hasVerbPhrase() ?
                 actions.get(0).getVerbPhrase() : null;
         String prepositionToCopy = null;
         ObjectPhrase indirectToCopy = null;
-        PlayerAction action;
+        Action action;
         for (int i = actions.size() - 1; i >= 0; i--) {
             action = actions.get(i);
 
@@ -591,7 +513,7 @@ public class VerbGnosticParser implements Parser {
      * @param prepositionToCopy
      * @return
      */
-    private static String getBackwardPrepositionToCopyBefore(PlayerAction action,
+    private static String getBackwardPrepositionToCopyBefore(Action action,
                                                              VerbPhrase lastVerbPhrase,
                                                              String prepositionToCopy) {
         if (action.hasVerbPhrase() && action.getVerbPhrase().equals(lastVerbPhrase)) {
@@ -606,7 +528,7 @@ public class VerbGnosticParser implements Parser {
         return null; // stop copying as verb has changed
     }
 
-    private static ObjectPhrase getBackwardsIndirectToCopyBefore(PlayerAction action,
+    private static ObjectPhrase getBackwardsIndirectToCopyBefore(Action action,
                                                                  VerbPhrase lastVerbPhrase,
                                                                  ObjectPhrase indirectToCopy) {
         if (action.hasVerbPhrase() && action.getVerbPhrase().equals(lastVerbPhrase)) {
@@ -626,7 +548,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param prepositionToCopy
      */
-    private static String getBackwardPrepositionToCopyAfter(PlayerAction action,
+    private static String getBackwardPrepositionToCopyAfter(Action action,
                                                             String prepositionToCopy) {
 
         if (action.hasVerbPhrase()) {
@@ -642,7 +564,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param indirectToCopy
      */
-    private static ObjectPhrase getBackwardsIndirectToCopyAfter(PlayerAction action,
+    private static ObjectPhrase getBackwardsIndirectToCopyAfter(Action action,
                                                                 ObjectPhrase indirectToCopy) {
         if (action.hasVerbPhrase()) {
             return null;
@@ -654,7 +576,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param prepositionToCopy
      */
-    private static void setBackwardsPrepositionToCopy(PlayerAction action,
+    private static void setBackwardsPrepositionToCopy(Action action,
                                                       String prepositionToCopy) {
         if (prepositionToCopy != null) {
             action.setPreposition(prepositionToCopy);
@@ -665,7 +587,7 @@ public class VerbGnosticParser implements Parser {
      * @param action
      * @param indirectToCopy
      */
-    private static void setBackwardsIndirectToCopy(PlayerAction action,
+    private static void setBackwardsIndirectToCopy(Action action,
                                                    ObjectPhrase indirectToCopy) {
         if (indirectToCopy != null) {
             action.setIndirectObjectPhrase(indirectToCopy);
@@ -685,14 +607,14 @@ public class VerbGnosticParser implements Parser {
     // * @param statement
     // * @return
     // */
-    // private static PlayerCommand translation(String input, Sentence statement) {
+    // private static Command translation(String input, Sentence statement) {
     // // Index tracking
     // int actionIndex = 0;
     // int objectIndex = 0;
     // // 1. The first word of the command should either be a verb, or a shortcut
     // // represents some playerAction
     //
-    // // return new PlayerCommand(command, playerAction, object);
+    // // return new Command(command, playerAction, object);
     // return null;
     // }
 }

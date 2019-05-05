@@ -3,29 +3,37 @@ package com.github.evanquan.parsely.word;
 import com.github.evanquan.parsely.util.FuncUtils;
 
 /**
- * Represents a single action for the player to do. A {@link PlayerCommand} may
+ * Represents a single action for the player to do. A {@link Command} may
  * be composed of multiple actions. Confirms to the following grammar:
  * <br><br>
  * VerbPhrase? ObjectPhrase? Preposition? ObjectPhrase?
  *
  * @author Evan Quan
  */
-public class PlayerAction {
+public class Action {
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Action) {
+            return hasSameVerbPhrase((Action) other)
+                    && hasSameDirectObjectPhrase((Action) other)
+                    && hasSamePreposition((Action) other)
+                    && hasSameIndirectObjectPhrase((Action) other);
+        }
+        return false;
+    }
 
     private VerbPhrase verbPhrase;
     private ObjectPhrase directObjectPhrase;
     private String preposition;
     private ObjectPhrase indirectObjectPhrase;
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof PlayerAction) {
-            return hasSameVerbPhrase((PlayerAction) other)
-                    && hasSameDirectObjectPhrase((PlayerAction) other)
-                    && hasSamePreposition((PlayerAction) other)
-                    && hasSameIndirectObjectPhrase((PlayerAction) other);
-        }
-        return false;
+    /**
+     * @param other to compare
+     * @return true if both player actions have the same direct object phrase.
+     */
+    private boolean hasSameDirectObjectPhrase(Action other) {
+        return FuncUtils.nullablesEqual(this.directObjectPhrase, other.getDirectObjectPhrase());
     }
 
     /**
@@ -120,17 +128,9 @@ public class PlayerAction {
 
     /**
      * @param other to compare
-     * @return true if both player actions have the same direct object phrase.
-     */
-    private boolean hasSameDirectObjectPhrase(PlayerAction other) {
-        return FuncUtils.nullablesEqual(this.directObjectPhrase, other.getDirectObjectPhrase());
-    }
-
-    /**
-     * @param other to compare
      * @return true if both player actions have the same indirect object phrase.
      */
-    private boolean hasSameIndirectObjectPhrase(PlayerAction other) {
+    private boolean hasSameIndirectObjectPhrase(Action other) {
         return FuncUtils.nullablesEqual(this.indirectObjectPhrase, other.getIndirectObjectPhrase());
     }
 
@@ -138,7 +138,7 @@ public class PlayerAction {
      * @param other to compare
      * @return true if both player actions have the same preposition.
      */
-    private boolean hasSamePreposition(PlayerAction other) {
+    private boolean hasSamePreposition(Action other) {
         return FuncUtils.nullablesEqual(this.preposition, other.getPreposition());
     }
 
@@ -146,8 +146,53 @@ public class PlayerAction {
      * @param other to compare
      * @return true if both player actions have the same verb phrase.
      */
-    private boolean hasSameVerbPhrase(PlayerAction other) {
+    private boolean hasSameVerbPhrase(Action other) {
         return FuncUtils.nullablesEqual(this.verbPhrase, other.getVerbPhrase());
+    }
+
+    /**
+     * The verb phrase determines what type the action is. As there may be
+     * multiple synonyms for any given verb, we must unify these synonyms to
+     * action types so the game knows what the player is trying to do.
+     */
+    public enum ActionType {
+        /**
+         * Remove an item from the player's inventory into the world.
+         */
+        DROP,
+        /**
+         * Obtain an item from the world into the player's inventory.
+         */
+        GET,
+        /**
+         * Get more details on a specified object.
+         */
+        EXAMINE,
+        /**
+         * Look at the current room's description.
+         */
+        LOOK,
+        /**
+         * Move to another room.
+         */
+        GO,
+        /**
+         * Examine the contents of the player's inventory.
+         */
+        INVENTORY,
+        /**
+         * Examine the status of the player's stats.
+         */
+        STATS,
+        /**
+         * Save the game.
+         */
+        SAVE,
+        /**
+         * Load the game.
+         */
+        LOAD,
+
     }
 
     /**

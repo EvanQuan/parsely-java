@@ -7,15 +7,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * <b>This exists as a backup for {@link VerbGnosticParser}.</b>
- * <p>
- * Parses a string into a {@link PlayerCommand}. The parser abides by the
+ * Parses a string into a {@link Command}. The parser abides by the
  * following grammar rules:
  * <p>
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
  * indirect objects is not known.<br> - The game handles the validity of these
  * words, not the parser.<br> 2. The first word of the receiveInput is always a
- * verb.<br> - Player stringCommands are 2nd person imperative statements.<br>
+ * verb.<br> - Player {@link Command}s are 2nd person imperative statements.<br>
  * 3. Indirect object phrases are always preceded by a preposition.<br> 4.
  * Direct object phrases are always positioned before indirect object
  * phrases.<br> 5. The dictionary of all possible prepositions is known.<br> 6.
@@ -24,49 +22,41 @@ import java.util.Scanner;
  * <p>
  * <b>Due to not having a verb dictionary, this cannot do the following:</b>
  * </p>
- * Multiple playerAction stringCommands, such as:<br> Multiverb stringCommands:
- * (look up, eat pie, go west)<br> Verbsharing stringCommands: (eat pie, potato,
+ * Multiple-{@link Action} {@link Command}s, such as:<br> Multiverb
+ * commands:
+ * (look up, eat pie, go west)<br> Verbsharing {@link Command}s: (eat pie, potato,
  * cake)<br> Object pronouns (this may not be implemented here): (take pie, eat
  * it)<br>
  * <br>
  * With the current implementation, an indeterminism problem arises in trying to
- * parse these kind of stringCommands without a dictionary of valid verbs. As a
+ * parse these kind of {@link Command}s without a dictionary of valid verbs. As a
  * bonus this would allow for verbs to be modified with adverbs<br> For this to
  * be implemented, what needs to be done:<br> - A verb dictionary<br> -
  * lexicalAnalysis() needs to recognize commas at the end of words as their own
- * tokens<br> - syntacticalAnalys() needs to separate playerActions by
+ * tokens<br> - syntacticalAnalysis() needs to separate playerActions by
  * separators<br> - incomplete playerActions need to be able to "fill in the
  * gaps" from context of previously parsed playerActions in the same
  * command<br>
  *
  * @author Evan Quan
- * @deprecated {@link VerbGnosticParser} can evaluate multiple {@link
- * PlayerAction}s per {@link PlayerCommand}, and parses more complicated aspects
- * of {@link ObjectPhrase}s.
  */
-@Deprecated
-public class VerbAgnosticParser implements Parser {
+public class VerbAgnosticParser extends Parser {
 
-    // NOTE: For now, only "," as end punctuation will count, as quotes are
-    // causing problems with syntactical analysis
-    /**
-     * Defines the type of punctuation that can exist at the start of a word
-     * that will split and count as its own token.
-     */
-    // public static final char[] START_PUNCTUATION = { '\'', '"' };
-    public static final char[] START_PUNCTUATION = {};
-    /**
-     * Defines the type of punctuation that can exist at the end of a word that
-     * will split and count as its own token.
-     */
-    // public static final char[] END_PUNCTUATION = { '\'', '"', ',' };
-    public static final char[] END_PUNCTUATION = {','};
-
-    /**
-     * Cannot instantiate.
-     */
+    private static VerbAgnosticParser instance = null;
     private VerbAgnosticParser() {
     }
+
+    /**
+     * Can only be instantiated by {@link ParserFactory}
+     */
+    static VerbAgnosticParser getInstance() {
+        if (instance == null) {
+            instance = new VerbAgnosticParser();
+        }
+        return instance;
+    }
+
+
 
     /**
      * Splits token by punctuation and adds punctuation components to
@@ -131,7 +121,7 @@ public class VerbAgnosticParser implements Parser {
             objectPhrase.setNoun(tokens.remove(tokens.size() - 1));
         }
         // If any receiveInput remains, they are adjectives which modify the object.
-        // TODO: This WILL need to change once multiple stringCommands separated by commas
+        // TODO: This WILL need to change once multiple {@link Command}s separated by commas
         // with a
         // single verb is implemented. Either here, or in syntactical analysis.
         ArrayList<String> adjectives = new ArrayList<>();
@@ -178,16 +168,16 @@ public class VerbAgnosticParser implements Parser {
      * and relationships. Accepts only imperative statements.
      *
      * @param input - String to parse into words
-     * @return command that represents the player {@link PlayerCommand}
+     * @return command that represents the player {@link Command}
      */
-    public static PlayerCommand parse(String input) {
-        // Add unaltered receiveInput to PlayerCommand
-        PlayerCommand playerCommand = new PlayerCommand(input);
+    public static Command parse(String input) {
+        // Add unaltered receiveInput to Command
+        Command command = new Command(input);
         // https://groups.google.com/forum/#!topic/rec.arts.int-fiction/VpsWZdWRnlA
         ArrayList<String> tokens = lexicalAnalysis(input);
-        syntacticalAnalysis(playerCommand, tokens);
+        syntacticalAnalysis(command, tokens);
 
-        return playerCommand;
+        return command;
     }
 
     /**
@@ -210,19 +200,20 @@ public class VerbAgnosticParser implements Parser {
      * Prepositions is known.<br> 5. The dictionary of all possible determiners
      * is known.
      *
-     * @param playerCommand
+     * @param command
      * @param tokens
      * @return
      */
-    public static void syntacticalAnalysis(PlayerCommand playerCommand, ArrayList<String> tokens) {
+    public static void syntacticalAnalysis(Command command, ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             // This happens when the player receiveInput an empty string
             return;
         }
-        // TODO when multi-playerAction stringCommands are implemented, make this part a loop for
+        // TODO when multi-action {@link Command}s are implemented, make this
+        //  part a loop for
         // every separator section
 
-        PlayerAction playerAction = new PlayerAction();
+        Action action = new Action();
 
         String first = tokens.get(0);
         if (!Word.isDeterminer(first) && !Word.isObjectPhraseSeparatingPreposition(first)) {
@@ -231,12 +222,12 @@ public class VerbAgnosticParser implements Parser {
             // end of the verb phrase and the start of the proceeding indirect/direct object
             // phrase without a dictionary of all possible verbs.
             tokens.remove(0);
-            playerAction.setVerbPhrase(new VerbPhrase(first));
+            action.setVerbPhrase(new VerbPhrase(first));
         }
         // 1. Scan for a preposition. If one is found, remove it. Parse the receiveInput
         // preceding the preposition as a direct object phrase. Parse the receiveInput
         // following the preposition as an indirect object phrase.
-        // For the sake of how the PlayerCommand will be parsed in the game, the
+        // For the sake of how the Command will be parsed in the game, the
         // preposition
         // is added to the indirect object phrase.
 
@@ -247,7 +238,7 @@ public class VerbAgnosticParser implements Parser {
         for (i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
             if (Word.isObjectPhraseSeparatingPreposition(token)) {
-                playerAction.setPreposition(token);
+                action.setPreposition(token);
                 break;
             } else {
                 directTokens.add(token);
@@ -260,11 +251,11 @@ public class VerbAgnosticParser implements Parser {
         }
 
         // Create the object phrases from the token lists
-        playerAction.setDirectObjectPhrase(getObjectPhrase(directTokens));
-        playerAction.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
+        action.setDirectObjectPhrase(getObjectPhrase(directTokens));
+        action.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
 
-        // Add complete playerAction to player command
-        playerCommand.addAction(playerAction);
+        // Add complete action to player command
+        command.addAction(action);
     }
 
     // /**
@@ -280,14 +271,14 @@ public class VerbAgnosticParser implements Parser {
     // * @param statement
     // * @return
     // */
-    // private static PlayerCommand translation(String receiveInput, Sentence statement) {
+    // private static Command translation(String receiveInput, Sentence statement) {
     // // Index tracking
     // int actionIndex = 0;
     // int objectIndex = 0;
     // // 1. The first word of the command should either be a verb, or a shortcut
     // // represents some playerAction
     //
-    // // return new PlayerCommand(command, playerAction, object);
+    // // return new Command(command, playerAction, object);
     // return null;
     // }
 }
