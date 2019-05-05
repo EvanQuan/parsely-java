@@ -1,4 +1,4 @@
-package com.github.evanquan.parsely.word;
+package com.github.evanquan.parsely.words;
 
 import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.util.FuncUtils;

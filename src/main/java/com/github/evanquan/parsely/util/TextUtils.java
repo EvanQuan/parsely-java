@@ -24,17 +24,17 @@ public class TextUtils {
     }
 
     /**
-     * Split word by upper case letters
+     * Split words by upper case letters
      *
      * @param string to split
-     * @return an array of which each element is a word split by camel case
+     * @return an array of which each element is a words split by camel case
      */
     public static String[] splitCamelCase(String string) {
         return string.split("(?<!^)(?=[A-Z])");
     }
 
     /**
-     * Split word by upper case letters by spaces
+     * Split words by upper case letters by spaces
      *
      * @param string to split
      * @return a string of words separated by spaces by camel case
@@ -86,7 +86,7 @@ public class TextUtils {
     }
 
     /**
-     * Converts beginning of each word in string to upper case
+     * Converts beginning of each words in string to upper case
      *
      * @param string to change to title case
      * @return title case string

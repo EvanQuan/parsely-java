@@ -1,7 +1,7 @@
 package com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.util.CollectionUtils;
-import com.github.evanquan.parsely.word.Command;
+import com.github.evanquan.parsely.words.Command;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,13 +11,13 @@ public abstract class Parser {
     // NOTE: For now, only "," as end punctuation will count, as quotes are
     // causing problems with syntactical analysis
     /**
-     * Defines the type of punctuation that can exist at the start of a word
+     * Defines the type of punctuation that can exist at the start of a words
      * that will split and count as its own token.
      */
     // public static final char[] START_PUNCTUATION = { '\'', '"' };
     public static final char[] START_PUNCTUATION = {};
     /**
-     * Defines the type of punctuation that can exist at the end of a word that
+     * Defines the type of punctuation that can exist at the end of a words that
      * will split and count as its own token.
      */
     // public static final char[] END_PUNCTUATION = { '\'', '"', ',' };
@@ -28,10 +28,10 @@ public abstract class Parser {
     /**
      * <b>Step 1: Lexical Analysis</b>
      * <p>
-     * Splits the input string into tokens, each representing a word of the
+     * Splits the input string into tokens, each representing a words of the
      * command. The tokens are in the same order as they appear in the input
      * string. Each character of punctuation counts as its own token only if it
-     * is a single or double quote around a word, or a comma after a word.
+     * is a single or double quote around a words, or a comma after a words.
      *
      * @param input - input String
      * @return list of all tokens.
@@ -58,7 +58,7 @@ public abstract class Parser {
     /**
      * Splits token by punctuation and adds punctuation components to
      * tokens.<br> - Double and single quotes at the start or end of words<br> -
-     * Commas after a word<br> - Other punctuation and symbols are stripped and
+     * Commas after a words<br> - Other punctuation and symbols are stripped and
      * ignored.
      *
      * @param tokens
@@ -82,7 +82,7 @@ public abstract class Parser {
         }
 
         tokens.add(token);
-        // End quote is added after word to preserve token order
+        // End quote is added after words to preserve token order
         if (changedLastChar) {
             tokens.add(endQuote);
         }

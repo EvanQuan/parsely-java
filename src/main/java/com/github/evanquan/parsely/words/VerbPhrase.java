@@ -1,4 +1,4 @@
-package com.github.evanquan.parsely.word;
+package com.github.evanquan.parsely.words;
 
 import com.github.evanquan.parsely.util.FuncUtils;
 
@@ -20,7 +20,7 @@ public class VerbPhrase {
     private ArrayList<String> adverbs;
 
     /**
-     * A word that describes an action.
+     * A words that describes an action.
      */
     private String verb;
 

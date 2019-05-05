@@ -1,6 +1,6 @@
 package com.github.evanquan.parsely.parser;
 
-import com.github.evanquan.parsely.word.*;
+import com.github.evanquan.parsely.words.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.HashMap;
  * <p>
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
  * indirect objects is not known.<br> - The game handles the validity of these
- * words, not the parser.<br> 2. The first word of the input is always a
+ * words, not the parser.<br> 2. The first words of the input is always a
  * verb.<br> - Player stringCommands are 2nd person imperative statements.<br>
  * 3. Indirect object phrases are always preceded by a preposition.<br> 4.
  * Direct object phrases are always positioned before indirect object
@@ -56,9 +56,9 @@ public class VerbGnosticParser extends Parser {
         ObjectPhrase objectPhrase = new ObjectPhrase();
         // Scan for an determiner. If one is found, remove it and parse the
         // rest of the input.
-        // NOTE: The preposition must be the first word in the list for it to
+        // NOTE: The preposition must be the first words in the list for it to
         // make sense grammatically. If a determiner is preceded with another
-        // word, be it another determiner or not, it will be counted as an
+        // words, be it another determiner or not, it will be counted as an
         // adjective.
         if (Word.isDeterminer(tokens.get(0))) {
             objectPhrase.setDeterminer(tokens.remove(0));
@@ -88,10 +88,10 @@ public class VerbGnosticParser extends Parser {
         }
         objectPhrase.setOwner(getObjectPhrase(ownerTokens));
 
-        // The last word in the input is the object. Remove it and parse
+        // The last words in the input is the object. Remove it and parse
         // the rest of the input.
         if (!thisTokens.isEmpty()) {
-            // If no more tokens remain, then the last word is not a noun
+            // If no more tokens remain, then the last words is not a noun
             objectPhrase.setNoun(thisTokens.remove(thisTokens.size() - 1));
         }
         // If any input remains, they are adjectives which modify the
@@ -226,7 +226,7 @@ public class VerbGnosticParser extends Parser {
             return;
         }
         if (Word.isVerb(tokens.get(0))) {
-            // 0. The first word is a verb. Remove it and parse the rest of the
+            // 0. The first words is a verb. Remove it and parse the rest of the
             // input. No adverbs are allowed as it would not be
             // possible to distinguish between the end of the verb phrase and
             // the start of the proceeding indirect/direct object
@@ -612,7 +612,7 @@ public class VerbGnosticParser extends Parser {
     // // Index tracking
     // int actionIndex = 0;
     // int objectIndex = 0;
-    // // 1. The first word of the command should either be a verb, or a shortcut
+    // // 1. The first words of the command should either be a verb, or a shortcut
     // // represents some playerAction
     //
     // // return new Command(command, playerAction, object);

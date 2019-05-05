@@ -1,4 +1,4 @@
-package com.github.evanquan.parsely.word;
+package com.github.evanquan.parsely.words;
 
 import com.github.evanquan.parsely.parser.Parser;
 import com.github.evanquan.parsely.util.CollectionUtils;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Represents a word. A word must contain one or more alphanumeric characters.
+ * Represents a words. A words must contain one or more alphanumeric characters.
  *
  * @author Evan Quan
  */
@@ -100,7 +100,7 @@ public class Word {
             Set.of("a", "an", "all")
     );
     /**
-     * While the {@link Parser} will treat any word that ends with "ly" as an
+     * While the {@link Parser} will treat any words that ends with "ly" as an
      * adverb for parsing strings into {@link Command}s, the game will
      * reject all adverbs it doesn't recognize.
      */
@@ -208,7 +208,7 @@ public class Word {
      * from a {@link Command} into multiple {@link Action}s.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid action
+     * @return true if the specified words is recognized as a valid action
      * separator.
      */
     public static boolean isActionSeparator(String word) {
@@ -219,7 +219,7 @@ public class Word {
      * An article specify a noun.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid article.
+     * @return true if the specified words is recognized as a valid article.
      */
     public static boolean isArticle(String word) {
         return ARTICLES.contains(word.toLowerCase());
@@ -229,7 +229,7 @@ public class Word {
      * A determiner is either an article, or a quantifier.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid determiner,
+     * @return true if the specified words is recognized as a valid determiner,
      * which is either an article or quantifier.
      */
     public static boolean isDeterminer(String word) {
@@ -238,7 +238,7 @@ public class Word {
 
     /**
      * @param word to check
-     * @return true if the specified word is recognized as a valid directional
+     * @return true if the specified words is recognized as a valid directional
      * preposition.
      */
     public static boolean isDirectionalPreposition(String word) {
@@ -247,7 +247,7 @@ public class Word {
 
     /**
      * @param word to check
-     * @return true if the specified word is recognized as a valid joining
+     * @return true if the specified words is recognized as a valid joining
      * preposition.
      */
     public static boolean isJoiningPreposition(String word) {
@@ -256,7 +256,7 @@ public class Word {
 
     /**
      * @param word to check
-     * @return true if the specified word is recognized as a valid movement
+     * @return true if the specified words is recognized as a valid movement
      * preposition.
      */
     public static boolean isMovementPreposition(String word) {
@@ -268,7 +268,7 @@ public class Word {
      * phrases. This excludes belonging prepositions.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid preposition
+     * @return true if the specified words is recognized as a valid preposition
      * for separating object phrases.
      */
     public static boolean isObjectPhraseSeparatingPreposition(String word) {
@@ -280,7 +280,7 @@ public class Word {
      * number, or specify "all" of an noun.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid quantifier.
+     * @return true if the specified words is recognized as a valid quantifier.
      */
     public static boolean isQuantifier(String word) {
         return QUANTIFIERS.contains(word.toLowerCase())
@@ -291,7 +291,7 @@ public class Word {
      * This is used for separating object phrases from their owners.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid belonging
+     * @return true if the specified words is recognized as a valid belonging
      * preposition.
      */
     public static boolean isBelongingPreposition(String word) {
@@ -303,7 +303,7 @@ public class Word {
      * purposes.
      *
      * @param word to check
-     * @return true if the specified word is recognized as following the
+     * @return true if the specified words is recognized as following the
      * structure of an adverb.
      */
     public static boolean isAdverb(String word) {
@@ -315,7 +315,7 @@ public class Word {
      * used in commands.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid adverb.
+     * @return true if the specified words is recognized as a valid adverb.
      */
     public static boolean isKnownAdverb(String word) {
         return ADVERBS.contains(word.toLowerCase());
@@ -325,7 +325,7 @@ public class Word {
      * Verbs are words that specify an action.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid verb.
+     * @return true if the specified words is recognized as a valid verb.
      */
     public static boolean isVerb(String word) {
         return VERBS.contains(word.toLowerCase());
@@ -337,7 +337,7 @@ public class Word {
      * sense.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a valid
+     * @return true if the specified words is recognized as a valid
      */
     public static boolean isNonIndirectTransitiveVerb(String word) {
         return NON_INDIRECT_TRANSITIVE_VERBS.contains(word.toLowerCase());
@@ -348,7 +348,7 @@ public class Word {
      * phrase attached to them in order to make sense.
      *
      * @param word to check
-     * @return true if the specified word is recognized as an indirect
+     * @return true if the specified words is recognized as an indirect
      * transitive verb.
      */
     public static boolean isIndirectTransitiveVerb(String word) {
@@ -363,7 +363,7 @@ public class Word {
      * needed to make sense.
      *
      * @param word to check
-     * @return true fi the specified word is recognized as an optionally
+     * @return true fi the specified words is recognized as an optionally
      * indirect transitive verb.
      */
     public static boolean isOptionallyIndirectTransitiveVerb(String word) {
@@ -376,7 +376,7 @@ public class Word {
      * and an indirect object phrase to make sense.
      *
      * @param word to check
-     * @return true if the specified word is an intransitive verb.
+     * @return true if the specified words is an intransitive verb.
      */
     public static boolean isIntransitiveVerb(String word) {
         return INTRANSITIVE_VERBS.contains(word.toLowerCase());
@@ -388,7 +388,7 @@ public class Word {
      * itself.
      *
      * @param word to check
-     * @return true if the specified word is recognized as an optionally
+     * @return true if the specified words is recognized as an optionally
      * terminating intransitive verb.
      */
     public static boolean isOptionallyTerminatingIntransitiveVerb(String word) {
@@ -401,7 +401,7 @@ public class Word {
      * preposition (and thus an indirect object phrase to make sense)
      *
      * @param word to check
-     * @return true if the specified word is recognized as a terminating
+     * @return true if the specified words is recognized as a terminating
      * intransitive verb.
      */
     public static boolean isTerminatingIntransitiveVerb(String word) {
@@ -413,7 +413,7 @@ public class Word {
      * object phrases and are actions entirely on their own.
      *
      * @param word to check
-     * @return true if the specified word is recognized as a non-terminating
+     * @return true if the specified words is recognized as a non-terminating
      * intransitive verb.
      */
     public static boolean isNonTerminatingIntransitiveVerb(String word) {

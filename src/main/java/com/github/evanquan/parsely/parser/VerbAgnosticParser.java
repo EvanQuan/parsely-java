@@ -1,6 +1,6 @@
 package com.github.evanquan.parsely.parser;
 
-import com.github.evanquan.parsely.word.*;
+import com.github.evanquan.parsely.words.*;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * <p>
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
  * indirect objects is not known.<br> - The game handles the validity of these
- * words, not the parser.<br> 2. The first word of the receiveInput is always a
+ * words, not the parser.<br> 2. The first words of the receiveInput is always a
  * verb.<br> - Player {@link Command}s are 2nd person imperative statements.<br>
  * 3. Indirect object phrases are always preceded by a preposition.<br> 4.
  * Direct object phrases are always positioned before indirect object
@@ -70,17 +70,17 @@ public class VerbAgnosticParser extends Parser {
         ObjectPhrase objectPhrase = new ObjectPhrase();
         // Scan for an determiner. If one is found, remove it and parse the
         // rest of the receiveInput.
-        // NOTE: The preposition must be the first word in the list for it to
+        // NOTE: The preposition must be the first words in the list for it to
         // make sense grammatically. If a determiner is preceded with another
-        // word, be it another determiner or not, it will be counted as an
+        // words, be it another determiner or not, it will be counted as an
         // adjective.
         if (Word.isDeterminer(tokens.get(0))) {
             objectPhrase.setDeterminer(tokens.remove(0));
         }
-        // The last word in the receiveInput is the object. Remove it and parse the
+        // The last words in the receiveInput is the object. Remove it and parse the
         // rest of the receiveInput.
         if (!tokens.isEmpty()) {
-            // If no more tokens remain, then the last word is not a noun
+            // If no more tokens remain, then the last words is not a noun
             objectPhrase.setNoun(tokens.remove(tokens.size() - 1));
         }
         // If any receiveInput remains, they are adjectives which modify the object.
@@ -150,7 +150,7 @@ public class VerbAgnosticParser extends Parser {
 
         String first = tokens.get(0);
         if (!Word.isDeterminer(first) && !Word.isObjectPhraseSeparatingPreposition(first)) {
-            // 0. The first word is a verb. Remove it and parse the rest of the receiveInput.
+            // 0. The first words is a verb. Remove it and parse the rest of the receiveInput.
             // No adverbs are allowed as it would not be possible to distinguish between the
             // end of the verb phrase and the start of the proceeding indirect/direct object
             // phrase without a dictionary of all possible verbs.
@@ -208,7 +208,7 @@ public class VerbAgnosticParser extends Parser {
     // // Index tracking
     // int actionIndex = 0;
     // int objectIndex = 0;
-    // // 1. The first word of the command should either be a verb, or a shortcut
+    // // 1. The first words of the command should either be a verb, or a shortcut
     // // represents some playerAction
     //
     // // return new Command(command, playerAction, object);

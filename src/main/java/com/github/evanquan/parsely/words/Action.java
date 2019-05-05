@@ -1,4 +1,4 @@
-package com.github.evanquan.parsely.word;
+package com.github.evanquan.parsely.words;
 
 import com.github.evanquan.parsely.util.FuncUtils;
 
@@ -67,7 +67,7 @@ public class Action {
     }
 
     /**
-     * @return the word positioned between this command's direct and indirect
+     * @return the words positioned between this command's direct and indirect
      * {@link ObjectPhrase}s.
      */
     public String getPreposition() {
