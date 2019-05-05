@@ -19,8 +19,6 @@ import test.com.github.evanquan.parsely.words.WordTest;
 @Suite.SuiteClasses({
         CollectionUtilsTest.class,
         FuncUtilsTest.class,
-//        LocationTest.class,
-//        TestTest.class,
         ActionTest.class,
         Parser_addToken_Test.class,
         VerbGnosticParser_getObjectPhrase_Test.class,
@@ -32,7 +30,6 @@ import test.com.github.evanquan.parsely.words.WordTest;
         ObjectPhraseTest.class,
         TextUtilsTest.class,
         WordTest.class,
-//        ExitTest.class
 })
 public class _TestSuite {
 }
