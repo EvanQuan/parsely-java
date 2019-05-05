@@ -6,6 +6,11 @@ import com.github.evanquan.parsely.words.Command;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Parses a {@link String} into a {@link Command}.
+ *
+ * @author Evan Quan
+ */
 public abstract class Parser {
 
     // NOTE: For now, only "," as end punctuation will count, as quotes are
@@ -15,13 +20,13 @@ public abstract class Parser {
      * that will split and count as its own token.
      */
     // public static final char[] START_PUNCTUATION = { '\'', '"' };
-    public static final char[] START_PUNCTUATION = {};
+    private static final char[] START_PUNCTUATION = {};
     /**
      * Defines the type of punctuation that can exist at the end of a words that
      * will split and count as its own token.
      */
     // public static final char[] END_PUNCTUATION = { '\'', '"', ',' };
-    public static final char[] END_PUNCTUATION = {',', '.'};
+    private static final char[] END_PUNCTUATION = {',', '.'};
 
     public static final String[] VALID_PREPOSITIONS = {};
 
@@ -40,7 +45,7 @@ public abstract class Parser {
         // NOTE: There's probably a better way to do this that doesn't use Scanner.
         // aka. Split by spaces, then map reduce.
         Scanner in = new Scanner(input);
-        ArrayList<String> tokens = new ArrayList<String>();
+        ArrayList<String> tokens = new ArrayList<>();
 
         // Add all tokens
         while (in.hasNext()) {
@@ -61,8 +66,8 @@ public abstract class Parser {
      * Commas after a words<br> - Other punctuation and symbols are stripped and
      * ignored.
      *
-     * @param tokens
-     * @param token
+     * @param tokens to add token to
+     * @param token to add to tokens
      */
     public static void addToken(ArrayList<String> tokens, String token) {
 

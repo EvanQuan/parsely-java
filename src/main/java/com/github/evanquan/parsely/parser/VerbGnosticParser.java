@@ -44,7 +44,7 @@ public class VerbGnosticParser extends Parser {
      * indirect object phrase. This modifies the tokens argument (may be changed
      * later if needed).
      *
-     * @param tokens
+     * @param tokens to parse for an object phrase
      * @return object phrase that is composed of all token components, or null
      * if tokens is empty. Since this is recursively called for owners, an
      * ObjectPhrase without an owner will have a null owner.
@@ -116,20 +116,22 @@ public class VerbGnosticParser extends Parser {
      */
     @Override
     public Command parse(String input) {
-        // Add unaltered input to Command
-        Command command = new Command(input);
         // https://groups.google.com/forum/#!topic/rec.arts.int-fiction/VpsWZdWRnlA
         ArrayList<String> tokens = lexicalAnalysis(input);
-        ArrayList<ArrayList<String>> actionTokens =
+        ArrayList<ArrayList<String>> tokenListsPerAction =
                 splitTokensByActions(tokens);
 
-        for (ArrayList<String> action : actionTokens) {
-            syntacticalAnalysis(command, action);
+        ArrayList<Action> actions = new ArrayList<>();
+        for (ArrayList<String> actionTokens : tokenListsPerAction) {
+            Action action = syntacticalAnalysis(actionTokens);
+            if (!action.isEmpty()) {
+                actions.add(action);
+            }
         }
 
-        syntacticalCleanup(command);
+        syntacticalCleanup(actions);
 
-        return command;
+        return new Command(input, actions);
     }
 
     /**
@@ -142,8 +144,9 @@ public class VerbGnosticParser extends Parser {
      * TODO: Optimization: redo this so it doesn't need to traverse the tokens
      * twice
      *
-     * @param tokens
-     * @return
+     * @param tokens to split
+     * @return list of token lists, where each token list corresponds to an
+     * action
      */
     public ArrayList<ArrayList<String>> splitTokensByActions(
             ArrayList<String> tokens) {
@@ -194,22 +197,17 @@ public class VerbGnosticParser extends Parser {
      * phrases.<br> 4. The dictionary of all possible Prepositions is known.<br>
      * 5. The dictionary of all possible determiners is known.<br>
      *
-     * @param command
-     * @param tokens
-     * @return
+     * @param tokens to parse for action
+     * @return action parsed from tokens
      */
-    public void syntacticalAnalysis(Command command,
-                                    ArrayList<String> tokens) {
+    private Action syntacticalAnalysis(ArrayList<String> tokens) {
+
+        Action action = new Action();
         if (tokens.isEmpty()) {
             // This happens when the player input string an empty string
             // This is also the base case to stop ObjectPhrase owner recursion
-            return;
+            return action;
         }
-
-        // TODO when multi-action {@link Command} are implemented, make
-        // this part a loop for every separator section.
-
-        Action action = new Action();
 
         // Get adverbs
         VerbPhrase verbPhrase = new VerbPhrase();
@@ -222,8 +220,7 @@ public class VerbGnosticParser extends Parser {
         if (tokens.isEmpty()) {
             // If the action is only adverbs, then return early
             action.setVerbPhrase(verbPhrase);
-            command.addAction(action);
-            return;
+            return action;
         }
         if (Word.isVerb(tokens.get(0))) {
             // 0. The first words is a verb. Remove it and parse the rest of the
@@ -265,8 +262,7 @@ public class VerbGnosticParser extends Parser {
         action.setDirectObjectPhrase(getObjectPhrase(directTokens));
         action.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
 
-        // Add complete action to player command
-        command.addAction(action);
+        return action;
     }
 
     /**
@@ -275,13 +271,12 @@ public class VerbGnosticParser extends Parser {
      * multi-actions work by ensuring each one has the verb phrases,
      * prepositions, direct and indirect object phrases necessary.
      *
-     * @param command
+     * @param actions to fix
      */
-    public void syntacticalCleanup(Command command) {
-        if (command.isEmpty()) {
+    private void syntacticalCleanup(ArrayList<Action> actions) {
+        if (actions.isEmpty()) {
             return;
         }
-        ArrayList<Action> actions = command.getActions();
 
         // Backwards fix must be applied after forward fix because forward
         // fix fixes some direct object phrases to indirect object
@@ -303,9 +298,9 @@ public class VerbGnosticParser extends Parser {
      * preposition refer to the object phrase. If a new preposition is found,
      * switch to the new preposition to copy.
      *
-     * @param actions
+     * @param actions to fix
      */
-    public void fixSyntaxForward(ArrayList<Action> actions) {
+    private void fixSyntaxForward(ArrayList<Action> actions) {
         VerbPhrase verbPhraseToCopy = null;
         ObjectPhrase directObjectToCopy = null;
         String prepositionToCopy = null;
@@ -356,10 +351,10 @@ public class VerbGnosticParser extends Parser {
      * where a new verb is found without a (preposition or indirect object
      * phrase).
      *
-     * @param action
-     * @param verbPhraseToCopy
-     * @param previousDirectObjectToCopy
-     * @return
+     * @param action to fix
+     * @param verbPhraseToCopy forward
+     * @param previousDirectObjectToCopy forward
+     * @return object phrase that was fixed
      */
     private ObjectPhrase getForwardDirectObjectToCopy(Action action,
                                                       VerbPhrase verbPhraseToCopy,
@@ -383,10 +378,10 @@ public class VerbGnosticParser extends Parser {
     }
 
     /**
-     * @param action
-     * @param verbPhraseToCopy
-     * @param previousPrepositionToCopy
-     * @return
+     * @param action to fix
+     * @param verbPhraseToCopy forward
+     * @param previousPrepositionToCopy forward
+     * @return preposition to copy
      */
     private String getForwardPrepositionToCopy(Action action,
                                                VerbPhrase verbPhraseToCopy,
@@ -414,8 +409,8 @@ public class VerbGnosticParser extends Parser {
     /**
      * If there is a verb to copy forward, then copy it to the action.
      *
-     * @param action
-     * @param verbPhraseToCopy
+     * @param action to fix
+     * @param verbPhraseToCopy forward
      */
     private void setForwardVerbPhraseToCopy(Action action,
                                             VerbPhrase verbPhraseToCopy) {
@@ -427,8 +422,8 @@ public class VerbGnosticParser extends Parser {
     /**
      * If there is a preposition to copy, then copy it to the action.
      *
-     * @param action
-     * @param prepositionToCopy
+     * @param action to fix
+     * @param prepositionToCopy forward
      */
     private void setForwardPrepositionToCopy(Action action,
                                              String prepositionToCopy) {
@@ -441,8 +436,8 @@ public class VerbGnosticParser extends Parser {
     /**
      * If there is a direct object phrase to copy, then copy it to the action.
      *
-     * @param action
-     * @param directObjectToCopy
+     * @param action to fix
+     * @param directObjectToCopy forward
      */
     private void setForwardDirectObjectToCopy(Action action,
                                               ObjectPhrase directObjectToCopy) {
@@ -456,8 +451,8 @@ public class VerbGnosticParser extends Parser {
      * and not an indirect object phrase, then move the direct object phrase to
      * become indirect.
      *
-     * @param action
-     * @param prepositionToCopy
+     * @param action to fix
+     * @param prepositionToCopy forward
      */
     private void moveForwardDirectToIndirect(Action action,
                                              String prepositionToCopy) {
@@ -475,9 +470,9 @@ public class VerbGnosticParser extends Parser {
      * preposition or indirect object phrase is found, set that as the new
      * preposition or indirect object phrase to copy backwards.
      *
-     * @param actions
+     * @param actions to fix
      */
-    public void fixSyntaxBackwards(ArrayList<Action> actions) {
+    private void fixSyntaxBackwards(ArrayList<Action> actions) {
         VerbPhrase lastVerbPhrase = actions.get(0).hasVerbPhrase() ?
                 actions.get(0).getVerbPhrase() : null;
         String prepositionToCopy = null;
@@ -510,9 +505,9 @@ public class VerbGnosticParser extends Parser {
      * found, then change to that preposition to copy backwards. Otherwise, if
      * an action with a verb phrase
      *
-     * @param action
-     * @param prepositionToCopy
-     * @return
+     * @param action to fix
+     * @param prepositionToCopy backwards
+     * @return preposition to copy
      */
     private String getBackwardPrepositionToCopyBefore(Action action,
                                                       VerbPhrase lastVerbPhrase,
@@ -546,8 +541,8 @@ public class VerbGnosticParser extends Parser {
      * After a verb has been reached, stop copying prepositions for future
      * actions.
      *
-     * @param action
-     * @param prepositionToCopy
+     * @param action to fix
+     * @param prepositionToCopy backwards
      */
     private String getBackwardPrepositionToCopyAfter(Action action,
                                                      String prepositionToCopy) {
@@ -562,8 +557,9 @@ public class VerbGnosticParser extends Parser {
      * After a verb has been reached, stop copying indirect object phrases for
      * future actions.
      *
-     * @param action
-     * @param indirectToCopy
+     * @param action to fix
+     * @param indirectToCopy backwards
+     * @return object phrase to copy backwards
      */
     private ObjectPhrase getBackwardsIndirectToCopyAfter(Action action,
                                                          ObjectPhrase indirectToCopy) {
@@ -574,8 +570,8 @@ public class VerbGnosticParser extends Parser {
     }
 
     /**
-     * @param action
-     * @param prepositionToCopy
+     * @param action to fix
+     * @param prepositionToCopy backwards
      */
     private void setBackwardsPrepositionToCopy(Action action,
                                                String prepositionToCopy) {
@@ -585,8 +581,8 @@ public class VerbGnosticParser extends Parser {
     }
 
     /**
-     * @param action
-     * @param indirectToCopy
+     * @param action to fix
+     * @param indirectToCopy backwards
      */
     private void setBackwardsIndirectToCopy(Action action,
                                             ObjectPhrase indirectToCopy) {

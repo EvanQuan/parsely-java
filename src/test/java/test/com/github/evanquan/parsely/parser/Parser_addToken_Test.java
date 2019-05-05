@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class Parser_addToken_Test {
 
-    public static ArrayList<String> tokens;
+    private static ArrayList<String> tokens;
 
-    public static void testAddToken(String token, String[] expected) {
+    private static void testAddToken(String token, String[] expected) {
         Parser.addToken(tokens, token);
         assertEquals(new ArrayList<>(Arrays.asList(expected)), tokens);
     }

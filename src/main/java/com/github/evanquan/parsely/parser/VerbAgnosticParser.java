@@ -5,7 +5,7 @@ import com.github.evanquan.parsely.words.*;
 import java.util.ArrayList;
 
 /**
- * Parses a string into a {@link Command}. The parser abides by the
+ * Parses a {@link String} into a {@link Command}. The parser abides by the
  * following grammar rules:
  * <p>
  * 1. The dictionary of all possible verbs, adjectives, direct objects, and
@@ -59,7 +59,7 @@ public class VerbAgnosticParser extends Parser {
      * indirect object phrase. This modifies the tokens argument (may be changed
      * later if needed).
      *
-     * @param tokens
+     * @param tokens to convert to an object phrase
      * @return object phrase that is composed of all token components, or null
      * if tokens is empty
      */
@@ -87,10 +87,7 @@ public class VerbAgnosticParser extends Parser {
         // TODO: This WILL need to change once multiple {@link Command}s separated by commas
         // with a
         // single verb is implemented. Either here, or in syntactical analysis.
-        ArrayList<String> adjectives = new ArrayList<>();
-        for (int i = 0; i < tokens.size(); i++) {
-            adjectives.add(tokens.get(i));
-        }
+        ArrayList<String> adjectives = new ArrayList<>(tokens);
         objectPhrase.setAdjectives(adjectives);
         return objectPhrase;
     }
@@ -105,12 +102,11 @@ public class VerbAgnosticParser extends Parser {
     @Override
     public Command parse(String input) {
         // Add unaltered receiveInput to Command
-        Command command = new Command(input);
         // https://groups.google.com/forum/#!topic/rec.arts.int-fiction/VpsWZdWRnlA
         ArrayList<String> tokens = lexicalAnalysis(input);
-        syntacticalAnalysis(command, tokens);
+        Action action = syntacticalAnalysis(tokens);
 
-        return command;
+        return new Command(input, action);
     }
 
     /**
@@ -133,20 +129,20 @@ public class VerbAgnosticParser extends Parser {
      * Prepositions is known.<br> 5. The dictionary of all possible determiners
      * is known.
      *
-     * @param command
-     * @param tokens
-     * @return
+     * @param tokens to parse for actions
+     * @return action parsed from tokens
      */
-    public void syntacticalAnalysis(Command command, ArrayList<String> tokens) {
+    private Action syntacticalAnalysis(ArrayList<String> tokens) {
+
+        Action action = new Action();
         if (tokens.isEmpty()) {
             // This happens when the player receiveInput an empty string
-            return;
+            return action;
         }
         // TODO when multi-action {@link Command}s are implemented, make this
         //  part a loop for
         // every separator section
 
-        Action action = new Action();
 
         String first = tokens.get(0);
         if (!Word.isDeterminer(first) && !Word.isObjectPhraseSeparatingPreposition(first)) {
@@ -187,8 +183,7 @@ public class VerbAgnosticParser extends Parser {
         action.setDirectObjectPhrase(getObjectPhrase(directTokens));
         action.setIndirectObjectPhrase(getObjectPhrase(indirectTokens));
 
-        // Add complete action to player command
-        command.addAction(action);
+        return action;
     }
 
     // /**

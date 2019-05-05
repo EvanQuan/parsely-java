@@ -17,30 +17,33 @@ public class Command {
     /**
      * Series of actions in the order they were issued.
      */
-    ArrayList<Action> actions;
+    private ArrayList<Action> actions;
     /**
      * Represents the player command directly as a string, unaltered.
      */
     private String string;
 
     /**
-     * Default constructor. Does not initially contain any {@link
-     * Action}s.
      *
      * @param string input string representation of the command.
+     * @param actions to correspond to command.
      */
-    public Command(String string) {
+    public Command(String string, ArrayList<Action> actions) {
         this.string = string;
-        actions = new ArrayList<>();
+        this.actions = actions;
     }
 
     /**
-     * Add a single action to this command's list of actions.
      *
-     * @param action
+     * @param string input string representation of the command.
+     * @param action to correspond to command.
      */
-    public void addAction(Action action) {
-        this.actions.add(action);
+    public Command(String string, Action action) {
+        this.string = string;
+        this.actions = new ArrayList<>();
+        if (!action.isEmpty()) {
+            this.actions.add(action);
+        }
     }
 
     /**
@@ -80,10 +83,6 @@ public class Command {
         return this.actions;
     }
 
-    public void setActions(ArrayList<Action> actions) {
-        this.actions = actions;
-    }
-
     /**
      * Get the input string that represents this command. This is different from
      * toString(), which gives a detailed representation of all components of
@@ -108,8 +107,9 @@ public class Command {
     /**
      * @param other to compare
      * @return true if the other command has the same actions as this command.
+     * @NOTE unused
      */
-    public boolean hasSameActions(Command other) {
+    private boolean hasSameActions(Command other) {
         return FuncUtils.nullablesEqual(this.actions, other.getActions());
     }
 
@@ -117,8 +117,9 @@ public class Command {
      * @param other to compare
      * @return true if the other command has the same input string as this
      * command.
+     * @NOTE unused
      */
-    public boolean hasSameString(Command other) {
+    private boolean hasSameString(Command other) {
         return FuncUtils.nullablesEqual(this.string, other.getString());
     }
 
@@ -131,7 +132,7 @@ public class Command {
         StringBuilder actions = new StringBuilder();
         if (hasActions()) {
             for (Action action : this.actions) {
-                actions.append("\t\t" + action + System.lineSeparator());
+                actions.append("\t\t").append(action).append(System.lineSeparator());
             }
         }
         return "[string: " + string + System.lineSeparator() +
