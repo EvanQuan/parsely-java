@@ -1,10 +1,8 @@
 package com.github.evanquan.parsely.parser;
 
-import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.word.*;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Parses a string into a {@link Command}. The parser abides by the
@@ -56,41 +54,6 @@ public class VerbAgnosticParser extends Parser {
         return instance;
     }
 
-
-
-    /**
-     * Splits token by punctuation and adds punctuation components to
-     * tokens.<br> - Double and single quotes at the start or end of words<br> -
-     * Commas after a word<br> - Other punctuation and symbols are stripped and
-     * ignored.
-     *
-     * @param tokens
-     * @param token
-     */
-    public static void addToken(ArrayList<String> tokens, String token) {
-
-        char firstChar = token.charAt(0);
-        if (CollectionUtils.contains(START_PUNCTUATION, firstChar)) {
-            tokens.add(Character.toString(firstChar));
-            token = token.substring(1);
-        }
-
-        boolean changedLastChar = false;
-        String endQuote = "";
-        char lastChar = token.charAt(token.length() - 1);
-        if (CollectionUtils.contains(END_PUNCTUATION, lastChar)) {
-            endQuote = Character.toString(lastChar);
-            token = token.substring(0, token.length() - 1);
-            changedLastChar = true;
-        }
-
-        tokens.add(token);
-        // End quote is added after word to preserve token order
-        if (changedLastChar) {
-            tokens.add(endQuote);
-        }
-    }
-
     /**
      * Find an objective phrase from a list of tokens. Can be either a direct or
      * indirect object phrase. This modifies the tokens argument (may be changed
@@ -100,7 +63,7 @@ public class VerbAgnosticParser extends Parser {
      * @return object phrase that is composed of all token components, or null
      * if tokens is empty
      */
-    public static ObjectPhrase getObjectPhrase(ArrayList<String> tokens) {
+    public ObjectPhrase getObjectPhrase(ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             return null;
         }
@@ -133,44 +96,14 @@ public class VerbAgnosticParser extends Parser {
     }
 
     /**
-     * <b>Step 1: Lexical Analysis</b>
-     * <p>
-     * Splits the receiveInput string into tokens, each representing a word of
-     * the command. The tokens are in the same order as they appear in the
-     * receiveInput string. Each character of punctuation counts as its own
-     * token only if it is a single or double quote around a word, or a comma
-     * after a word.
-     *
-     * @param input - receiveInput String
-     * @return list of all tokens.
-     */
-    public static ArrayList<String> lexicalAnalysis(String input) {
-        // NOTE: There's probably a better way to do this that doesn't use Scanner.
-        // aka. Split by spaces, then map reduce.
-        Scanner in = new Scanner(input);
-        ArrayList<String> tokens = new ArrayList<String>();
-
-        // Add all tokens
-        while (in.hasNext()) {
-            String token = in.next();
-            addToken(tokens, token);
-        }
-        in.close();
-        return tokens;
-        // Right, now just using basic split by spaces. May need to change this when
-        // things get
-        // more complicated
-        // return new ArrayList<>(Arrays.asList(receiveInput.split(" ")));
-    }
-
-    /**
      * Parse receiveInput text into words and apply their appropriate meanings
      * and relationships. Accepts only imperative statements.
      *
      * @param input - String to parse into words
      * @return command that represents the player {@link Command}
      */
-    public static Command parse(String input) {
+    @Override
+    public Command parse(String input) {
         // Add unaltered receiveInput to Command
         Command command = new Command(input);
         // https://groups.google.com/forum/#!topic/rec.arts.int-fiction/VpsWZdWRnlA
@@ -204,7 +137,7 @@ public class VerbAgnosticParser extends Parser {
      * @param tokens
      * @return
      */
-    public static void syntacticalAnalysis(Command command, ArrayList<String> tokens) {
+    public void syntacticalAnalysis(Command command, ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             // This happens when the player receiveInput an empty string
             return;

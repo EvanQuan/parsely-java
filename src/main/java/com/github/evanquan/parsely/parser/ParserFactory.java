@@ -1,6 +1,5 @@
 package com.github.evanquan.parsely.parser;
 
-import javax.naming.ConfigurationException;
 import java.util.HashMap;
 
 public final class ParserFactory {
@@ -15,11 +14,9 @@ public final class ParserFactory {
 
     /**
      * @param parserType to get
-     * @return the specified parser
-     * @throws ConfigurationException if the parser was not configured
-     *                                beforehand.
+     * @return the specified parser, or null if not configured correctly.
      */
-    public static Parser getParser(ParserType parserType) throws ConfigurationException {
+    public static Parser getParser(ParserType parserType) {
         switch (parserType) {
             case VERB_AGNOSTIC:
                 return VerbAgnosticParser.getInstance();
@@ -27,8 +24,6 @@ public final class ParserFactory {
                 if (isConfigured()) {
                     return new VerbGnosticParser(actionTypes);
                 }
-                throw new ConfigurationException("Cannot make verb gnostic " +
-                        "parser without action types.");
         }
         return null;
     }

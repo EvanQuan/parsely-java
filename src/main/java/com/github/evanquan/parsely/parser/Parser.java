@@ -1,6 +1,7 @@
 package com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.util.CollectionUtils;
+import com.github.evanquan.parsely.word.Command;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -63,7 +64,7 @@ public abstract class Parser {
      * @param tokens
      * @param token
      */
-    public static void addToken(ArrayList<String> tokens, String token) {
+    private static void addToken(ArrayList<String> tokens, String token) {
 
         char firstChar = token.charAt(0);
         if (CollectionUtils.contains(START_PUNCTUATION, firstChar)) {
@@ -86,5 +87,14 @@ public abstract class Parser {
             tokens.add(endQuote);
         }
     }
+
+    /**
+     * Parse receiveInput text into words and apply their appropriate meanings
+     * and relationships. Accepts only imperative statements.
+     *
+     * @param input - String to parse into words
+     * @return command that represents the player {@link Command}
+     */
+    public abstract Command parse(String input);
 
 }
