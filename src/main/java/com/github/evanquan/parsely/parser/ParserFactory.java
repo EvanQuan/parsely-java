@@ -21,18 +21,9 @@ public final class ParserFactory {
             case VERB_AGNOSTIC:
                 return VerbAgnosticParser.getInstance();
             case VERB_GNOSTIC:
-                if (isConfigured()) {
-                    return new VerbGnosticParser(actionTypes);
-                }
+                return new VerbGnosticParser(actionTypes);
         }
         return null;
-    }
-
-    /**
-     * @return true if the parsers are configured.
-     */
-    public static boolean isConfigured() {
-        return null != actionTypes;
     }
 
     public static void setActionTypes(HashMap<String, String> actions) {

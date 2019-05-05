@@ -64,7 +64,7 @@ public abstract class Parser {
      * @param tokens
      * @param token
      */
-    private static void addToken(ArrayList<String> tokens, String token) {
+    public static void addToken(ArrayList<String> tokens, String token) {
 
         char firstChar = token.charAt(0);
         if (CollectionUtils.contains(START_PUNCTUATION, firstChar)) {
