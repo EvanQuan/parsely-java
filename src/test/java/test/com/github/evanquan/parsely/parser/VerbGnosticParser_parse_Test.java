@@ -1,12 +1,14 @@
 package test.com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.parser.ParserFactory;
+import com.github.evanquan.parsely.parser.VerbGnosticParser;
 import com.github.evanquan.parsely.words.Action;
 import com.github.evanquan.parsely.words.Command;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -18,6 +20,8 @@ public class VerbGnosticParser_parse_Test {
     private static Command command;
     private static Action action;
     private static ArrayList<Action> actions;
+    private static VerbGnosticParser parser;
+    private static HashMap<String, String> actionTypes;
 
     /**
      * Test parse by parsing an input string and conveniently saving its
@@ -38,8 +42,7 @@ public class VerbGnosticParser_parse_Test {
      * @param print true if should print to standard output
      */
     private void testParse(String string, boolean print) {
-        command =
-                Objects.requireNonNull(ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC)).parse(string);
+        command = parser.parse(string);
         actions = command.getActions();
         if (print) {
             System.out.println(command);
@@ -49,6 +52,21 @@ public class VerbGnosticParser_parse_Test {
         } else {
             action = actions.get(0);
         }
+    }
+
+    @Before
+    public void setUp() {
+        actionTypes = new HashMap<>();
+        actionTypes.put("give", "give");
+        actionTypes.put("eat", "eat");
+        actionTypes.put("drop", "drop");
+        actionTypes.put("use", "use");
+        actionTypes.put("run", "run");
+        actionTypes.put("go", "go");
+        actionTypes.put("look", "look");
+        actionTypes.put("walk", "walk");
+        ParserFactory.setActionTypes(actionTypes);
+        parser = (VerbGnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
     }
 
     /**

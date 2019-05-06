@@ -30,13 +30,17 @@ import java.util.HashMap;
  */
 public class VerbGnosticParser extends Parser {
 
+    /**
+     * These determine what count as verbs, as well as recognizing verb
+     * synonyms.
+     */
     private HashMap<String, String> actionTypes;
 
     /**
      * Can only be instantiated by ParserFactory
      */
-    VerbGnosticParser(HashMap<String, String> actions) {
-        actionTypes = actions;
+    VerbGnosticParser(HashMap<String, String> actionTypes) {
+        this.actionTypes = actionTypes;
     }
 
     /**
@@ -222,7 +226,7 @@ public class VerbGnosticParser extends Parser {
             action.setVerbPhrase(verbPhrase);
             return action;
         }
-        if (Word.isVerb(tokens.get(0))) {
+        if (isVerb(tokens.get(0))) {
             // 0. The first words is a verb. Remove it and parse the rest of the
             // input. No adverbs are allowed as it would not be
             // possible to distinguish between the end of the verb phrase and
@@ -614,4 +618,7 @@ public class VerbGnosticParser extends Parser {
     // // return new Command(command, {@link Action}, object);
     // return null;
     // }
+    private boolean isVerb(String word) {
+        return actionTypes != null && actionTypes.containsKey(word.toLowerCase());
+    }
 }

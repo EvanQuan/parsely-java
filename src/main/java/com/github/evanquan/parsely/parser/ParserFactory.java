@@ -2,6 +2,11 @@ package com.github.evanquan.parsely.parser;
 
 import java.util.HashMap;
 
+/**
+ * Retrieve parsers.
+ *
+ * @author Evan Quan
+ */
 public final class ParserFactory {
 
     private static HashMap<String, String> actionTypes;

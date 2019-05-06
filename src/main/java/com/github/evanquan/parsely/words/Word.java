@@ -327,6 +327,7 @@ public class Word {
      * @param word to check
      * @return true if the specified words is recognized as a valid verb.
      */
+    @Deprecated
     public static boolean isVerb(String word) {
         return VERBS.contains(word.toLowerCase());
     }

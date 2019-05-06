@@ -10,29 +10,30 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Evan Quan
  */
 public class VerbGnosticParser_getObjectPhrase_Test {
 
-    public static ArrayList<String> tokens;
-    public static ObjectPhrase expected;
-    public static ObjectPhrase actual;
+    private static ObjectPhrase expected;
+    private static ObjectPhrase actual;
+    private static VerbGnosticParser parser;
 
-    public static void testGetObjectPhrase(String[] array) {
-        tokens = CollectionUtils.getArrayList(array);
-        actual = ((VerbGnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC)).getObjectPhrase(tokens);
+    private static void testGetObjectPhrase(String[] array) {
+        ArrayList<String> tokens = CollectionUtils.getArrayList(array);
+        actual = parser.getObjectPhrase(tokens);
 
     }
 
-    public static void testGetObjectPhraseEquals(String[] array) {
+    private static void testGetObjectPhraseEquals(String[] array) {
         testGetObjectPhrase(array);
         assertEquals(expected, actual);
     }
 
-    public static void testGetObjectPhraseEquals(String[] array,
-                                                 ObjectPhrase expected) {
+    private static void testGetObjectPhraseEquals(String[] array,
+                                                  ObjectPhrase expected) {
         testGetObjectPhrase(array);
         assertEquals(expected, actual);
     }
@@ -146,5 +147,7 @@ public class VerbGnosticParser_getObjectPhrase_Test {
     public void setUp() {
         expected = new ObjectPhrase();
         expected.setAdjectives(new ArrayList<>());
+        parser = (VerbGnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
+        assertNotNull(parser);
     }
 }
