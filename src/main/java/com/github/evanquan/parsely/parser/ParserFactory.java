@@ -19,7 +19,8 @@ public final class ParserFactory {
 
     /**
      * @param parserType to get
-     * @return the specified parser, or null if not configured correctly.
+     * @return the specified {@link Parser}, or null if not configured
+     * correctly.
      */
     public static Parser getParser(ParserType parserType) {
         switch (parserType) {
@@ -27,8 +28,9 @@ public final class ParserFactory {
                 return VerbAgnosticParser.getInstance();
             case VERB_GNOSTIC:
                 return new VerbGnosticParser(actionTypes);
+            default:
+                return null;
         }
-        return null;
     }
 
     public static void setActionTypes(HashMap<String, String> actions) {

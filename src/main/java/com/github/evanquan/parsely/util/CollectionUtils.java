@@ -22,7 +22,7 @@ public class CollectionUtils {
      * Add array to ArrayList<String>
      *
      * @param array to add to list
-     * @param list
+     * @param list to add to
      */
     public static void addArrayToList(String[] array, ArrayList<String> list) {
         list.addAll(Arrays.asList(array));
@@ -31,8 +31,8 @@ public class CollectionUtils {
     /**
      * Checks if a char[] array contains a specified char key
      *
-     * @param array
-     * @param key
+     * @param array to check if key is contained in it
+     * @param key to check if it is contained in array
      * @return true if the array contains the specified char key
      */
     public static boolean contains(char[] array, char key) {
@@ -47,8 +47,8 @@ public class CollectionUtils {
     /**
      * Checks if an int[] array contains a specified int key
      *
-     * @param array
-     * @param key
+     * @param array to check if key is contained in it
+     * @param key to check if it is contained in array
      * @return true if the array contains the specified int key
      */
     public static boolean contains(int[] array, int key) {
@@ -58,8 +58,8 @@ public class CollectionUtils {
     /**
      * Checks if a String[] array contains a specified String key
      *
-     * @param array
-     * @param key
+     * @param array to check if key is contained in it
+     * @param key to check if it is contained in array
      * @return true if the array contains the specified String key
      */
     public static boolean contains(Object[] array, Object key) {
@@ -81,7 +81,7 @@ public class CollectionUtils {
      * @return the ArrayList equivalent
      */
     public static ArrayList<String> getArrayList(String[] array) {
-        return new ArrayList<String>(Arrays.asList(array));
+        return new ArrayList<>(Arrays.asList(array));
     }
 
     // public static ArrayList<String> getStringArrayList(double doub) {
@@ -101,7 +101,7 @@ public class CollectionUtils {
     // }
 
     public static ArrayList<Double> getDoubleArrayList(double[] doubleArray) {
-        ArrayList<Double> doubleList = new ArrayList<Double>();
+        ArrayList<Double> doubleList = new ArrayList<>();
         for (double d : doubleArray) {
             doubleList.add(d);
         }
@@ -109,11 +109,11 @@ public class CollectionUtils {
     }
 
     public static HashSet<String> getHashSet(String[] array) {
-        return new HashSet<String>(Arrays.asList(array));
+        return new HashSet<>(Arrays.asList(array));
     }
 
     public static ArrayList<Integer> getIntegerArrayList(int[] intArray) {
-        ArrayList<Integer> intList = new ArrayList<Integer>();
+        ArrayList<Integer> intList = new ArrayList<>();
         for (int i : intArray) {
             intList.add(i);
         }
@@ -123,8 +123,8 @@ public class CollectionUtils {
     /**
      * Convert a String ArrayList to a String array of the same contents.
      *
-     * @param list
-     * @return
+     * @param list to convert to array
+     * @return string array containing the elements of list
      */
     public static String[] getStringArray(ArrayList<String> list) {
         return list.toArray(new String[0]);
@@ -142,7 +142,7 @@ public class CollectionUtils {
     }
 
     /**
-     * Convert ArrayList<Integer> or ArrayList<Double> to ArrayList<String>
+     * Convert ArrayList\<Integer\> or ArrayList<Double> to ArrayList<String>
      * <p>
      * TODO: This is terrible and needs to be redone.
      *
@@ -151,22 +151,22 @@ public class CollectionUtils {
      */
     @Deprecated
     public static ArrayList<String> getStringArrayList(ArrayList<Number> inList) {
-        ArrayList<String> stringList = new ArrayList<String>();
+        ArrayList<String> stringList = new ArrayList<>();
 
         if (inList.isEmpty()) {
             stringList.add("");
         } else if (inList.get(0) instanceof Integer) {
-            for (int i = 0; i < inList.size(); i++) {
+            for (Number number : inList) {
                 try {
-                    stringList.add(Integer.toString((int) inList.get(i)));
+                    stringList.add(Integer.toString((int) number));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         } else if (inList.get(0) instanceof Double) {
-            for (int i = 0; i < inList.size(); i++) {
+            for (Number number : inList) {
                 try {
-                    stringList.add(Double.toString((double) inList.get(i)));
+                    stringList.add(Double.toString((double) number));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -177,7 +177,7 @@ public class CollectionUtils {
 
     @Deprecated
     public static ArrayList<String> getStringArrayListFromDouble(ArrayList<Double> doubleList) {
-        ArrayList<String> stringList = new ArrayList<String>();
+        ArrayList<String> stringList = new ArrayList<>();
         for (Double doub : doubleList) {
             try {
                 stringList.add(Double.toString(doub));
@@ -206,7 +206,7 @@ public class CollectionUtils {
      * @param list to sort
      */
     public static void sortByLongestFirst(ArrayList<String> list) {
-        ArrayList<String> outList = new ArrayList<String>();
+        ArrayList<String> outList = new ArrayList<>();
         while (!list.isEmpty()) {
             String longest = "";
             for (String string : list) {
@@ -246,6 +246,24 @@ public class CollectionUtils {
             set.addAll(s);
         }
         return set;
+    }
+
+    /**
+     * Join all elements of the list by the specified delimiter
+     *
+     * @param list      containing elements to join
+     * @param delimiter to join list elements
+     * @return result joined by delimiter
+     */
+    public static String join(ArrayList<String> list, String delimiter) {
+        StringBuilder builder = new StringBuilder();
+        int lastIndex = list.size() - 1;
+        for (int i = 0; i < lastIndex; i++) {
+            builder.append(list.get(i));
+            builder.append(delimiter);
+        }
+        builder.append(list.get(lastIndex));
+        return builder.toString();
     }
 
 }
