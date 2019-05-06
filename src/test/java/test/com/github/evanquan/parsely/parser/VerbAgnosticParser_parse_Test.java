@@ -1,6 +1,7 @@
 package test.com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.parser.ParserFactory;
+import com.github.evanquan.parsely.parser.ParserType;
 import com.github.evanquan.parsely.words.Action;
 import com.github.evanquan.parsely.words.Command;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class VerbAgnosticParser_parse_Test {
 
     private void testParse(String string) {
         command =
-                ParserFactory.getParser(ParserFactory.ParserType.VERB_AGNOSTIC).parse(string);
+                ParserFactory.getParser(ParserType.VERB_AGNOSTIC).parse(string);
         ArrayList<Action> actions = command.getActions();
         if (actions.isEmpty()) {
             action = null;

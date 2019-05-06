@@ -2,6 +2,7 @@ package test.com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.parser.Parser;
 import com.github.evanquan.parsely.parser.ParserFactory;
+import com.github.evanquan.parsely.parser.ParserType;
 import com.github.evanquan.parsely.words.Action;
 import com.github.evanquan.parsely.words.Command;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class VerbGnosticParser_parse_Test {
         actionTypes.put("look", "look");
         actionTypes.put("walk", "walk");
         ParserFactory.setActionTypes(actionTypes);
-        parser = ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
+        parser = ParserFactory.getParser(ParserType.VERB_GNOSTIC);
     }
 
     /**

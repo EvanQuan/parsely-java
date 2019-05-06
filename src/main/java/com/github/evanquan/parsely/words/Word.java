@@ -358,13 +358,13 @@ public class Word {
 
     /**
      * Optionally-indirect transitive verbs must have a direct object phrase
-     * attached directly to the, and optionally an indirect object phrase to
+     * attached directly to them, and optionally an indirect object phrase to
      * make sense. The specific context that the verb is being used and what the
      * direct object phrase is determines whether the indirect object phrase is
      * needed to make sense.
      *
      * @param word to check
-     * @return true fi the specified words is recognized as an optionally
+     * @return true if the specified words is recognized as an optionally
      * indirect transitive verb.
      */
     public static boolean isOptionallyIndirectTransitiveVerb(String word) {

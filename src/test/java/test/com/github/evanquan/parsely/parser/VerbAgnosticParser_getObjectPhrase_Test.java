@@ -1,6 +1,7 @@
 package test.com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.parser.ParserFactory;
+import com.github.evanquan.parsely.parser.ParserType;
 import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.words.ObjectPhrase;
 import org.junit.Before;
@@ -20,7 +21,7 @@ public class VerbAgnosticParser_getObjectPhrase_Test {
 
     private static void testGetObjectPhraseEquals(String[] array, ObjectPhrase expected) {
         ArrayList<String> tokens = CollectionUtils.getArrayList(array);
-        ObjectPhrase actual = Objects.requireNonNull(ParserFactory.getParser(ParserFactory.ParserType.VERB_AGNOSTIC)).getObjectPhrase(tokens);
+        ObjectPhrase actual = Objects.requireNonNull(ParserFactory.getParser(ParserType.VERB_AGNOSTIC)).getObjectPhrase(tokens);
         assertEquals(expected, actual);
     }
 
