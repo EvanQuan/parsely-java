@@ -24,7 +24,6 @@ import test.com.github.evanquan.parsely.words.WordTest;
         VerbGnosticParser_getObjectPhrase_Test.class,
         Parser_lexicalAnalysis_Test.class,
         VerbGnosticParser_parse_Test.class,
-        VerbGnosticParser_splitTokensByActions_Test.class,
         VerbAgnosticParser_getObjectPhrase_Test.class,
         VerbAgnosticParser_parse_Test.class,
         ObjectPhraseTest.class,

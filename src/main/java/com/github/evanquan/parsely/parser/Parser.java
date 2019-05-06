@@ -2,6 +2,7 @@ package com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.words.Command;
+import com.github.evanquan.parsely.words.ObjectPhrase;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -86,7 +87,13 @@ public abstract class Parser {
             changedLastChar = true;
         }
 
-        tokens.add(token);
+        if (!token.isEmpty()) {
+            // If the token is empty, then the token was punctuation on its own.
+            // We don't want empty tokens, as that will create take strange
+            // behaviour for parsing {@link Command} components. In other words,
+            // we don't want empty strings to become nouns, adjectives etc.
+            tokens.add(token);
+        }
         // End quote is added after words to preserve token order
         if (changedLastChar) {
             tokens.add(endQuote);
@@ -101,5 +108,16 @@ public abstract class Parser {
      * @return command that represents the player {@link Command}
      */
     public abstract Command parse(String input);
+
+    /**
+     * Find an objective phrase from a list of tokens. Can be either a direct or
+     * indirect object phrase. This modifies the tokens argument (may be changed
+     * later if needed).
+     *
+     * @param tokens to convert to an object phrase
+     * @return object phrase that is composed of all token components, or null
+     * if tokens is empty
+     */
+    public abstract ObjectPhrase getObjectPhrase(ArrayList<String> tokens);
 
 }

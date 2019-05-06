@@ -38,7 +38,7 @@ import java.util.ArrayList;
  *
  * @author Evan Quan
  */
-public class VerbAgnosticParser extends Parser {
+class VerbAgnosticParser extends Parser {
 
     private static VerbAgnosticParser instance = null;
     private VerbAgnosticParser() {
@@ -63,6 +63,7 @@ public class VerbAgnosticParser extends Parser {
      * @return object phrase that is composed of all token components, or null
      * if tokens is empty
      */
+    @Override
     public ObjectPhrase getObjectPhrase(ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             return null;

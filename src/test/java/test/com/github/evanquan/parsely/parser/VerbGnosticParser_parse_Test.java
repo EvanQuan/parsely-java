@@ -1,7 +1,7 @@
 package test.com.github.evanquan.parsely.parser;
 
+import com.github.evanquan.parsely.parser.Parser;
 import com.github.evanquan.parsely.parser.ParserFactory;
-import com.github.evanquan.parsely.parser.VerbGnosticParser;
 import com.github.evanquan.parsely.words.Action;
 import com.github.evanquan.parsely.words.Command;
 import org.junit.Before;
@@ -20,8 +20,7 @@ public class VerbGnosticParser_parse_Test {
     private static Command command;
     private static Action action;
     private static ArrayList<Action> actions;
-    private static VerbGnosticParser parser;
-    private static HashMap<String, String> actionTypes;
+    private static Parser parser;
 
     /**
      * Test parse by parsing an input string and conveniently saving its
@@ -56,7 +55,7 @@ public class VerbGnosticParser_parse_Test {
 
     @Before
     public void setUp() {
-        actionTypes = new HashMap<>();
+        HashMap<String, String> actionTypes = new HashMap<>();
         actionTypes.put("give", "give");
         actionTypes.put("eat", "eat");
         actionTypes.put("drop", "drop");
@@ -66,7 +65,7 @@ public class VerbGnosticParser_parse_Test {
         actionTypes.put("look", "look");
         actionTypes.put("walk", "walk");
         ParserFactory.setActionTypes(actionTypes);
-        parser = (VerbGnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
+        parser = ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
     }
 
     /**
@@ -449,7 +448,7 @@ public class VerbGnosticParser_parse_Test {
     @Test
     public void word8_indirectTransitiveVerb_complete() {
         testParse("give all of my delicious funnel cakes of deliciousness"
-                + " to the big angry demon of doom");
+                + " to the big ol' angry demon of doom");
 
         assertTrue(action.hasVerbPhrase());
         assertEquals("give", action.getVerbPhrase().getVerb());
@@ -487,12 +486,14 @@ public class VerbGnosticParser_parse_Test {
 
         assertTrue(action.hasIndirectObjectPhrase());
         assertEquals("the", action.getIndirectObjectPhrase().getDeterminer());
-        assertEquals(2,
+        assertEquals(3,
                 action.getIndirectObjectPhrase().getAdjectives().size());
         assertEquals("big",
                 action.getIndirectObjectPhrase().getAdjectives().get(0));
-        assertEquals("angry",
+        assertEquals("ol'",
                 action.getIndirectObjectPhrase().getAdjectives().get(1));
+        assertEquals("angry",
+                action.getIndirectObjectPhrase().getAdjectives().get(2));
         assertEquals("demon",
                 action.getIndirectObjectPhrase().getNoun());
 
@@ -796,8 +797,149 @@ public class VerbGnosticParser_parse_Test {
     }
 
     @Test
+    public void excludingPrepositions_all_noun_except_1() {
+        testParse("drop all b except b");
+
+        assertEquals(1, actions.size());
+
+        assertEquals("drop", actions.get(0).getVerbPhrase().getVerb());
+        assertEquals("all", actions.get(0).getDirectObjectPhrase().getDeterminer());
+        assertTrue(actions.get(0).getDirectObjectPhrase().hasNoun());
+        assertEquals("b", actions.get(0).getDirectObjectPhrase().getNoun());
+        assertEquals("except", actions.get(0).getPreposition());
+        assertEquals("b", actions.get(0).getIndirectObjectPhrase().getNoun());
+    }
+
+    @Test
+    public void excludingPrepositions_all_noun_except_2() {
+        testParse("drop all b except 3");
+
+        assertEquals(1, actions.size());
+
+        assertEquals("drop", actions.get(0).getVerbPhrase().getVerb());
+        assertEquals("all", actions.get(0).getDirectObjectPhrase().getDeterminer());
+        assertTrue(actions.get(0).getDirectObjectPhrase().hasNoun());
+        assertEquals("b", actions.get(0).getDirectObjectPhrase().getNoun());
+        assertEquals("except", actions.get(0).getPreposition());
+        assertFalse(actions.get(0).getIndirectObjectPhrase().hasNoun());
+        assertTrue(actions.get(0).getIndirectObjectPhrase().hasDeterminer());
+        assertEquals("3", actions.get(0).getIndirectObjectPhrase().getDeterminer());
+    }
+
+    @Test
+    public void multipleActions_then_2() {
+        testParse("b then c");
+
+        assertEquals(2, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_2() {
+        testParse("b, c", true);
+
+        assertEquals(2, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_space_both_ends_2() {
+        testParse("b , c", true);
+
+        assertEquals(2, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_space_before_2() {
+        testParse("b ,c", true);
+
+        assertEquals(1, actions.size());
+
+        assertFalse(actions.get(0).hasVerbPhrase());
+        assertEquals("b",
+                actions.get(0).getDirectObjectPhrase().getAdjectives().get(0));
+        assertEquals(",c",
+                actions.get(0).getDirectObjectPhrase().getNoun());
+    }
+
+    @Test
+    public void multipleActions_then_1() {
+        testParse("then c");
+
+        assertEquals(1, actions.size());
+    }
+
+    @Test
+    public void multipleActions_then_then_0() {
+        testParse("then then");
+
+        assertEquals(0, actions.size());
+    }
+
+    @Test
+    public void multipleActions_then_0() {
+        testParse("then");
+
+        assertEquals(0, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_0() {
+        testParse(",", true);
+
+        assertEquals(0, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_comma_0() {
+        testParse(",,");
+
+        assertEquals(0, actions.size());
+    }
+
+    @Test
+    public void multipleActions_comma_comma_1() {
+        testParse(",, b");
+
+        assertEquals(1, actions.size());
+        assertEquals("b", actions.get(0).getDirectObjectPhrase().getNoun());
+    }
+
+    /**
+     * This should be treated the same as if there was no space before the
+     * comma. In order words, the same as "eat b, c"
+     */
+    @Test
+    public void misplacedComma_spaceOnBothSides() {
+        testParse("eat b , c");
+
+        assertEquals(2, actions.size());
+
+        assertEquals("eat", actions.get(0).getVerbPhrase().getVerb());
+        assertEquals("b", actions.get(0).getDirectObjectPhrase().getNoun());
+
+        assertEquals("eat", actions.get(1).getVerbPhrase().getVerb());
+        assertEquals("c", actions.get(1).getDirectObjectPhrase().getNoun());
+    }
+
+    /**
+     * Since there is no direct object phrase attached to the first eat action,
+     * the verb will not follow through to the second action.
+     */
+    @Test
+    public void misplacedComma_spaceOnBothSides_2() {
+        testParse("eat , c", true);
+
+        assertEquals(2, actions.size());
+
+        assertEquals("eat", actions.get(0).getVerbPhrase().getVerb());
+        assertFalse(actions.get(0).hasDirectObjectPhrase());
+
+        assertFalse(actions.get(1).hasVerbPhrase());
+        assertEquals("c", actions.get(1).getDirectObjectPhrase().getNoun());
+    }
+
+    @Test
     public void excludingPrepositions_2_except_1() {
-        testParse("drop b, c except b", true);
+        testParse("drop b, c except b");
 
         assertEquals(2, actions.size());
 

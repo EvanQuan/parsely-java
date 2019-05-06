@@ -1,13 +1,13 @@
 package test.com.github.evanquan.parsely.parser;
 
 import com.github.evanquan.parsely.parser.ParserFactory;
-import com.github.evanquan.parsely.parser.VerbAgnosticParser;
 import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.words.ObjectPhrase;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,19 +16,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class VerbAgnosticParser_getObjectPhrase_Test {
 
-    public static ArrayList<String> tokens;
-    public static ObjectPhrase expected;
-    public static ObjectPhrase actual;
+    private static ObjectPhrase expected;
 
-    public static void testGetObjectPhrase(String[] array, ObjectPhrase expected) {
-        tokens = CollectionUtils.getArrayList(array);
-        actual =
-                ((VerbAgnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_AGNOSTIC)).getObjectPhrase(tokens);
-
-    }
-
-    public static void testGetObjectPhraseEquals(String[] array, ObjectPhrase expected) {
-        testGetObjectPhrase(array, expected);
+    private static void testGetObjectPhraseEquals(String[] array, ObjectPhrase expected) {
+        ArrayList<String> tokens = CollectionUtils.getArrayList(array);
+        ObjectPhrase actual = Objects.requireNonNull(ParserFactory.getParser(ParserFactory.ParserType.VERB_AGNOSTIC)).getObjectPhrase(tokens);
         assertEquals(expected, actual);
     }
 

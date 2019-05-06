@@ -28,7 +28,7 @@ import java.util.HashMap;
  *
  * @author Evan Quan
  */
-public class VerbGnosticParser extends Parser {
+class VerbGnosticParser extends Parser {
 
     /**
      * These determine what count as verbs, as well as recognizing verb
@@ -40,7 +40,9 @@ public class VerbGnosticParser extends Parser {
      * Can only be instantiated by ParserFactory
      */
     VerbGnosticParser(HashMap<String, String> actionTypes) {
-        this.actionTypes = actionTypes;
+        if (actionTypes != null) {
+            this.actionTypes = new HashMap<>(actionTypes);
+        }
     }
 
     /**
@@ -53,6 +55,7 @@ public class VerbGnosticParser extends Parser {
      * if tokens is empty. Since this is recursively called for owners, an
      * ObjectPhrase without an owner will have a null owner.
      */
+    @Override
     public ObjectPhrase getObjectPhrase(ArrayList<String> tokens) {
         if (tokens.isEmpty()) {
             return null;
@@ -152,7 +155,7 @@ public class VerbGnosticParser extends Parser {
      * @return list of token lists, where each token list corresponds to an
      * action
      */
-    public ArrayList<ArrayList<String>> splitTokensByActions(
+    private ArrayList<ArrayList<String>> splitTokensByActions(
             ArrayList<String> tokens) {
         // Each ArrayList sublist separated by separators counts as its own
         // {@link Action}

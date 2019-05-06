@@ -1,7 +1,7 @@
 package test.com.github.evanquan.parsely.parser;
 
+import com.github.evanquan.parsely.parser.Parser;
 import com.github.evanquan.parsely.parser.ParserFactory;
-import com.github.evanquan.parsely.parser.VerbGnosticParser;
 import com.github.evanquan.parsely.util.CollectionUtils;
 import com.github.evanquan.parsely.words.ObjectPhrase;
 import org.junit.Before;
@@ -19,7 +19,7 @@ public class VerbGnosticParser_getObjectPhrase_Test {
 
     private static ObjectPhrase expected;
     private static ObjectPhrase actual;
-    private static VerbGnosticParser parser;
+    private static Parser parser;
 
     private static void testGetObjectPhrase(String[] array) {
         ArrayList<String> tokens = CollectionUtils.getArrayList(array);
@@ -147,7 +147,7 @@ public class VerbGnosticParser_getObjectPhrase_Test {
     public void setUp() {
         expected = new ObjectPhrase();
         expected.setAdjectives(new ArrayList<>());
-        parser = (VerbGnosticParser) ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
+        parser = ParserFactory.getParser(ParserFactory.ParserType.VERB_GNOSTIC);
         assertNotNull(parser);
     }
 }
