@@ -1,6 +1,13 @@
 package com.github.evanquan.parsely.parser;
 
-public enum ActionTypeRequirement {
+import com.github.evanquan.parsely.words.Action;
+
+/**
+ * Specifies how necessary an {@link Action} component is.
+ *
+ * @author Evan Quan
+ */
+public enum Requirement {
 
     /**
      * Required with no exceptions.
@@ -16,9 +23,4 @@ public enum ActionTypeRequirement {
      * Cannot have under any circumstance.
      */
     FORBIDDEN,
-
-    /**
-     * Can have if and only if condition is met.
-     */
-    CONDITIONAL,
 }

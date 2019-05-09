@@ -1,7 +1,11 @@
 package com.github.evanquan.parsely.parser;
 
 /**
- * Valid parser types
+ * Valid {@link Parser} types. The type determines how the {@link Parser}
+ * behaves when parsing input, and may depend on varying levels of
+ * configuration for what words it knows.
+ *
+ * @author Evan Quan
  */
 public enum ParserType {
     /**
