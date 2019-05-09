@@ -1,26 +1,28 @@
 package com.github.evanquan.parsely.parser;
 
-import com.github.evanquan.parsely.words.Action;
+class Requirement {
 
-/**
- * Specifies how necessary an {@link Action} component is.
- *
- * @author Evan Quan
- */
-public enum Requirement {
+    private Status statusForCondition;
+    private Condition condition;
+    private Status statusDefault;
 
-    /**
-     * Required with no exceptions.
-     */
-    MANDATORY,
+    Requirement(Status statusForCondition,
+                Condition condition,
+                Status statusDefault) {
+        this.statusForCondition = statusForCondition;
+        this.condition = condition;
+        this.statusDefault = statusDefault;
+    }
 
-    /**
-     * Completely optional under all contexts.
-     */
-    OPTIONAL,
+    public Status getStatusForCondition() {
+        return statusForCondition;
+    }
 
-    /**
-     * Cannot have under any circumstance.
-     */
-    FORBIDDEN,
+    public Condition getCondition() {
+        return condition;
+    }
+
+    public Status getStatusDefault() {
+        return statusDefault;
+    }
 }

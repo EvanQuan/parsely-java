@@ -38,11 +38,8 @@ final class ActionTypeFactory {
      *                                        is used, it will be treated the
      *                                        same as using the primary verb.
      * @param directObjectPhraseRequirement   to check for validity
-     * @param directObjectPhraseCondition     to check for validity
-     * @param directObjectPhraseDefault       for check for validity
-     * @param indirectObjectPhraseRequirement for check for validity
-     * @param indirectObjectPhraseCondition   for check for validity
-     * @param indirectObjectPhraseDefault     for check for validity
+     * @param prepositionRequirement          to check for validity
+     * @param indirectObjectPhraseRequirement to check for validity
      * @return the configured {@link ActionType}.
      * @throws Exception if the verb is already being used by another {@link
      *                   ActionType}.
@@ -50,32 +47,16 @@ final class ActionTypeFactory {
     public ActionType getActionType(String primaryVerb,
                                     Collection<String> synonyms,
                                     Requirement directObjectPhraseRequirement,
-                                    Condition directObjectPhraseCondition,
-                                    Requirement directObjectPhraseDefault,
-
                                     Requirement prepositionRequirement,
-                                    Condition prepositionCondition,
-                                    Requirement prepositionDefault,
-
-                                    Requirement indirectObjectPhraseRequirement,
-                                    Condition indirectObjectPhraseCondition,
-                                    Requirement indirectObjectPhraseDefault
+                                    Requirement indirectObjectPhraseRequirement
     ) throws Exception {
         addVerbsToUsed(primaryVerb, synonyms);
 
         return new ActionType(primaryVerb,
                 new HashSet<>(synonyms),
                 directObjectPhraseRequirement,
-                directObjectPhraseCondition,
-                directObjectPhraseDefault,
-
                 prepositionRequirement,
-                prepositionCondition,
-                prepositionDefault,
-
-                indirectObjectPhraseRequirement,
-                indirectObjectPhraseCondition,
-                indirectObjectPhraseDefault
+                indirectObjectPhraseRequirement
         );
     }
 
