@@ -21,7 +21,7 @@ final class ActionTypeFactory {
     }
 
 
-    public static ActionTypeFactory getInstance() {
+    static ActionTypeFactory getInstance() {
         if (instance == null) {
             instance = new ActionTypeFactory();
         }
@@ -44,11 +44,11 @@ final class ActionTypeFactory {
      * @throws Exception if the verb is already being used by another {@link
      *                   ActionType}.
      */
-    public ActionType getActionType(String primaryVerb,
-                                    Collection<String> synonyms,
-                                    Requirement directObjectPhraseRequirement,
-                                    Requirement prepositionRequirement,
-                                    Requirement indirectObjectPhraseRequirement
+    ActionType getActionType(String primaryVerb,
+                             Collection<String> synonyms,
+                             Requirement directObjectPhraseRequirement,
+                             Requirement prepositionRequirement,
+                             Requirement indirectObjectPhraseRequirement
     ) throws Exception {
         addVerbsToUsed(primaryVerb, synonyms);
 
@@ -95,13 +95,9 @@ final class ActionTypeFactory {
      * @return true if the action was removed.
      */
     private boolean removeActionType(ActionType actionType) {
-
-        boolean removed = usedVerbs.remove(actionType.getPrimaryVerb());
-
-        removed =
-                usedVerbs.removeAll(actionType.getSynonyms()) || removed;
-
-        return removed;
+        // Bitwise OR prevents short-circuiting, so both evaluate.
+        return usedVerbs.remove(actionType.getPrimaryVerb())
+                | usedVerbs.removeAll(actionType.getSynonyms());
 
     }
 
