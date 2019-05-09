@@ -2,20 +2,20 @@ package com.github.evanquan.parsely.parser;
 
 class Requirement {
 
-    private Status statusForCondition;
+    private Status statusIfConditionMet;
     private Condition condition;
     private Status statusDefault;
 
-    Requirement(Status statusForCondition,
+    Requirement(Status statusIfConditionMet,
                 Condition condition,
                 Status statusDefault) {
-        this.statusForCondition = statusForCondition;
+        this.statusIfConditionMet = statusIfConditionMet;
         this.condition = condition;
         this.statusDefault = statusDefault;
     }
 
-    public Status getStatusForCondition() {
-        return statusForCondition;
+    public Status getStatusIfConditionMet() {
+        return statusIfConditionMet;
     }
 
     public Condition getCondition() {
