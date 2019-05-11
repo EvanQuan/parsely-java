@@ -5,27 +5,18 @@ import java.util.HashSet;
 
 /**
  * Creates {@link ActionType}s.
+ *
+ * @author Evan Quan
  */
 final class ActionTypeFactory {
-
-    private static ActionTypeFactory instance = null;
 
     /**
      * Tracks verbs that have already been used in configuring {@link
      * ActionType}s.
      */
-    private HashSet<String> usedVerbs;
+    private static HashSet<String> usedVerbs = new HashSet<>();
 
     private ActionTypeFactory() {
-        usedVerbs = new HashSet<>();
-    }
-
-
-    static ActionTypeFactory getInstance() {
-        if (instance == null) {
-            instance = new ActionTypeFactory();
-        }
-        return instance;
     }
 
     /**
@@ -44,11 +35,11 @@ final class ActionTypeFactory {
      * @throws Exception if the verb is already being used by another {@link
      *                   ActionType}.
      */
-    ActionType getActionType(String primaryVerb,
-                             Collection<String> synonyms,
-                             Requirement directObjectPhraseRequirement,
-                             Requirement prepositionRequirement,
-                             Requirement indirectObjectPhraseRequirement
+    static ActionType getActionType(String primaryVerb,
+                                    Collection<String> synonyms,
+                                    Requirement directObjectPhraseRequirement,
+                                    Requirement prepositionRequirement,
+                                    Requirement indirectObjectPhraseRequirement
     ) throws Exception {
         addVerbsToUsed(primaryVerb, synonyms);
 
@@ -69,8 +60,8 @@ final class ActionTypeFactory {
      * @throws Exception if the primaryVerb or synonyms contain a verb already
      *                   used by another {@link ActionType}.
      */
-    private void addVerbsToUsed(String primaryVerb,
-                                Collection<String> synonyms) throws Exception {
+    private static void addVerbsToUsed(String primaryVerb,
+                                       Collection<String> synonyms) throws Exception {
         String duplicateVerb = null;
 
         if (!usedVerbs.add(primaryVerb)) {
@@ -94,7 +85,7 @@ final class ActionTypeFactory {
      * @param actionType to remove
      * @return true if the action was removed.
      */
-    private boolean removeActionType(ActionType actionType) {
+    private static boolean removeActionType(ActionType actionType) {
         // Bitwise OR prevents short-circuiting, so both evaluate.
         return usedVerbs.remove(actionType.getPrimaryVerb())
                 | usedVerbs.removeAll(actionType.getSynonyms());
