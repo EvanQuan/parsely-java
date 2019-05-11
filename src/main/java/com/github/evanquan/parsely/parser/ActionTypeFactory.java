@@ -11,6 +11,30 @@ import java.util.HashSet;
 final class ActionTypeFactory {
 
     /**
+     * TODO to implement
+     *
+     * @param type
+     * @return
+     */
+    static ActionType getActionType(DefaultType type) {
+        return null;
+    }
+
+    /**
+     * Common types that are are already configured.
+     */
+    enum DefaultType {
+        GET,
+        DROP,
+        EAT,
+        EXAMINE,
+        GO,
+        USE,
+        GIVE,
+    }
+
+
+    /**
      * Tracks verbs that have already been used in configuring {@link
      * ActionType}s.
      */
@@ -52,6 +76,15 @@ final class ActionTypeFactory {
                 prepositionRequirement,
                 indirectObjectPhraseRequirement
         );
+    }
+
+    enum Transitivity {
+        /**
+         * Requires an
+         */
+        TRANSTIVE,
+        INTRASITIVE,
+        AMBITRANSITIVE_,
     }
 
     /**

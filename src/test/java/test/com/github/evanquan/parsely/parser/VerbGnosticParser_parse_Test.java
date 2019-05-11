@@ -65,6 +65,7 @@ public class VerbGnosticParser_parse_Test {
         actionTypes.put("go", "go");
         actionTypes.put("look", "look");
         actionTypes.put("walk", "walk");
+        actionTypes.put("pick", "get");
         ParserFactory.setActionTypes(actionTypes);
         parser = ParserFactory.getParser(ParserType.VERB_GNOSTIC);
     }
@@ -836,21 +837,21 @@ public class VerbGnosticParser_parse_Test {
 
     @Test
     public void multipleActions_comma_2() {
-        testParse("b, c", true);
+        testParse("b, c");
 
         assertEquals(2, actions.size());
     }
 
     @Test
     public void multipleActions_comma_space_both_ends_2() {
-        testParse("b , c", true);
+        testParse("b , c");
 
         assertEquals(2, actions.size());
     }
 
     @Test
     public void multipleActions_comma_space_before_2() {
-        testParse("b ,c", true);
+        testParse("b ,c");
 
         assertEquals(1, actions.size());
 
@@ -1042,5 +1043,10 @@ public class VerbGnosticParser_parse_Test {
 //        assertEquals("g", actions.get(3).getDirectObjectPhrase().getNoun());
 //        assertEquals("at", actions.get(3).getPreposition());
 //        assertEquals("h", actions.get(3).getIndirectObjectPhrase().getNoun());
+    }
+
+    @Test
+    public void pickup_1() {
+        testParse("pick up the cheese", true);
     }
 }
