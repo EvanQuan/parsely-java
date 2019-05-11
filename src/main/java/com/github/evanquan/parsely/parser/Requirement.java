@@ -1,28 +1,49 @@
 package com.github.evanquan.parsely.parser;
 
+import com.github.evanquan.parsely.words.Action;
+
+import java.util.ArrayList;
+
+/**
+ * @author Evan Quan
+ */
 class Requirement {
 
-    private Status statusIfConditionMet;
-    private Condition condition;
-    private Status statusDefault;
+    private Condition conditionIfConditionsMet;
+    private ArrayList<Condition> conditions;
+    private Condition conditionDefault;
 
-    Requirement(Status statusIfConditionMet,
-                Condition condition,
-                Status statusDefault) {
-        this.statusIfConditionMet = statusIfConditionMet;
-        this.condition = condition;
-        this.statusDefault = statusDefault;
+    Requirement(Condition conditionIfConditionsMet,
+                ArrayList<Condition> conditions,
+                Condition conditionDefault) {
+        this.conditionIfConditionsMet = conditionIfConditionsMet;
+        this.conditions = conditions;
+        this.conditionDefault = conditionDefault;
     }
 
-    public Status getStatusIfConditionMet() {
-        return statusIfConditionMet;
+    Condition getConditionIfConditionsMet() {
+        return conditionIfConditionsMet;
     }
 
-    public Condition getCondition() {
-        return condition;
+    ArrayList<Condition> getConditions() {
+        return conditions;
     }
 
-    public Status getStatusDefault() {
-        return statusDefault;
+    Condition getConditionDefault() {
+        return conditionDefault;
+    }
+
+    boolean isMet(Action action) {
+        Condition condition = getStatus(action);
+        return condition.isMet(action);
+    }
+
+    private Condition getStatus(Action action) {
+        for (Condition condition : conditions) {
+            if (!condition.isMet(action)) {
+                return conditionDefault;
+            }
+        }
+        return conditionIfConditionsMet;
     }
 }

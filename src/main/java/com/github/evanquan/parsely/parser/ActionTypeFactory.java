@@ -16,6 +16,9 @@ final class ActionTypeFactory {
      */
     private static HashSet<String> usedVerbs = new HashSet<>();
 
+    /**
+     * Cannot instantiate
+     */
     private ActionTypeFactory() {
     }
 

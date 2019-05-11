@@ -3,7 +3,7 @@ package com.github.evanquan.parsely.parser;
 import java.util.HashMap;
 
 /**
- * Retrieve parsers.
+ * Abstract {@link Parser} factory.
  *
  * @author Evan Quan
  */

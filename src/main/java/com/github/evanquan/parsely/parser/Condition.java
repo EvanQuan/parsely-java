@@ -1,12 +1,21 @@
 package com.github.evanquan.parsely.parser;
 
-public enum Condition {
-    DIRECT_OBJECT_PHRASE_DOES_NOT_EXIST,
-    DIRECT_OBJECT_PHRASE_EXISTS,
-    PREPOSITION_DOES_NOT_EXIST,
-    PREPOSITION_OBJECT_PHRASE_EXISTS,
-    INDIRECT_OBJECT_PHRASE_DOES_NOT_EXIST,
-    INDIRECT_OBJECT_PHRASE_EXISTS,
-    ANY_OBJECT_PHRASES_EXIST,
-    ALWAYS,
+import com.github.evanquan.parsely.words.Action;
+
+/**
+ * In order to determine the validity of {@link Action}s, each
+ * {@link ActionType} must evaluate all the corresponding {@link Condition}s
+ * for proper form.
+ *
+ * @author Evan Quan
+ */
+interface Condition {
+
+    /**
+     *
+     * @param action to check if its form conforms with this status
+     * @return true if the specified action's form conforms with this
+     * status's specifications.
+     */
+    boolean isMet(Action action);
 }
