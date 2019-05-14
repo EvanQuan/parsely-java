@@ -1,15 +1,13 @@
-package com.github.evanquan.parsely.parser;
+package com.github.evanquan.parsely.parser.condition;
 
 import com.github.evanquan.parsely.words.Action;
 
-public class Never implements Condition {
+class DirectObjectPhraseExists implements DirectObjectPhraseCondition {
 
-    private static Never instance = new Never();
+    private static DirectObjectPhraseExists instance =
+            new DirectObjectPhraseExists();
 
-    private Never() {
-    }
-
-    public static Never getInstance() {
+    public static DirectObjectPhraseExists getInstance() {
         return instance;
     }
 
@@ -20,6 +18,6 @@ public class Never implements Condition {
      */
     @Override
     public boolean isMet(Action action) {
-        return false;
+        return action.hasDirectObjectPhrase();
     }
 }

@@ -1,13 +1,12 @@
-package com.github.evanquan.parsely.parser;
+package com.github.evanquan.parsely.parser.condition;
 
 import com.github.evanquan.parsely.words.Action;
 
-public class DirectObjectPhraseExists implements DirectObjectPhraseCondition {
+class PrepositionExists implements PrepositionCondition {
 
-    private static DirectObjectPhraseExists instance =
-            new DirectObjectPhraseExists();
+    private static PrepositionExists instance = new PrepositionExists();
 
-    public static DirectObjectPhraseExists getInstance() {
+    public static PrepositionExists getInstance() {
         return instance;
     }
 
@@ -18,6 +17,6 @@ public class DirectObjectPhraseExists implements DirectObjectPhraseCondition {
      */
     @Override
     public boolean isMet(Action action) {
-        return action.hasDirectObjectPhrase();
+        return action.hasPreposition();
     }
 }

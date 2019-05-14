@@ -12,7 +12,7 @@ import java.util.HashSet;
  *
  * @author Evan Quan
  */
-class ActionType {
+public class ActionType {
 
     private Requirement[] requirements;
 

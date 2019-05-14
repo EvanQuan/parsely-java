@@ -1,5 +1,6 @@
-package com.github.evanquan.parsely.parser;
+package com.github.evanquan.parsely.parser.condition;
 
+import com.github.evanquan.parsely.parser.ActionType;
 import com.github.evanquan.parsely.words.Action;
 
 /**
@@ -9,7 +10,7 @@ import com.github.evanquan.parsely.words.Action;
  *
  * @author Evan Quan
  */
-interface Condition {
+public interface Condition {
 
     /**
      *

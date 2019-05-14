@@ -1,12 +1,15 @@
-package com.github.evanquan.parsely.parser;
+package com.github.evanquan.parsely.parser.condition;
 
 import com.github.evanquan.parsely.words.Action;
 
-public class PrepositionExists implements PrepositionCondition {
+class Never implements Condition {
 
-    private static PrepositionExists instance = new PrepositionExists();
+    private static Never instance = new Never();
 
-    public static PrepositionExists getInstance() {
+    private Never() {
+    }
+
+    public static Never getInstance() {
         return instance;
     }
 
@@ -17,6 +20,6 @@ public class PrepositionExists implements PrepositionCondition {
      */
     @Override
     public boolean isMet(Action action) {
-        return action.hasPreposition();
+        return false;
     }
 }

@@ -1,8 +1,8 @@
-package com.github.evanquan.parsely.parser;
+package com.github.evanquan.parsely.parser.condition;
 
 import com.github.evanquan.parsely.words.Action;
 
-public class IndirectObjectPhraseDoesNotExist implements IndirectObjectPhraseCondition {
+class IndirectObjectPhraseDoesNotExist implements IndirectObjectPhraseCondition {
 
     private static IndirectObjectPhraseDoesNotExist instance =
             new IndirectObjectPhraseDoesNotExist();

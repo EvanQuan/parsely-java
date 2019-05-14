@@ -1,5 +1,6 @@
 package com.github.evanquan.parsely.parser;
 
+import com.github.evanquan.parsely.parser.condition.Condition;
 import com.github.evanquan.parsely.words.Action;
 
 import java.util.ArrayList;
